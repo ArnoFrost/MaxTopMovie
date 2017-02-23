@@ -59,6 +59,7 @@ public class GridAdapter extends BaseAdapter {
             holder = (ViewHolder) converView.getTag();
         }
 //        Picasso.with(mContext).load(mList.get(position).getPoster_path()).into(holder.image);
+
         Picasso.with(mContext)
                 .load(mList.get(position).getPoster_path())
                 .placeholder(R.mipmap.ic_launcher)

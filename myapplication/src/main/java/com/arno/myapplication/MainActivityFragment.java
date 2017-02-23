@@ -1,5 +1,6 @@
 package com.arno.myapplication;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
@@ -12,9 +13,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.arno.myapplication.bean.MovieBean;
 
@@ -37,7 +40,8 @@ public class MainActivityFragment extends Fragment {
     //    private ArrayAdapter<String> mMovieAdapter;
     private GridAdapter gridAdapter;
     private GridView gridView;
-    MovieBean movieBean = new MovieBean();
+    //    缓存Bean
+    List<MovieBean.ResultsBean> useResult = null;
 
 
     public MainActivityFragment() {
@@ -66,8 +70,8 @@ public class MainActivityFragment extends Fragment {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
             FetchMovieTask movieTask = new FetchMovieTask();
-            movieTask.execute("popular");
-//          top_rated
+            movieTask.execute("top_rated");
+//          top_rated/popular
             return true;
         }
 
@@ -77,30 +81,27 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-//        String[] data = {"请连接网络并刷新"};
 
-//        List<String> movieTop = new ArrayList<String>(Arrays.asList(data));
-//        mMovieAdapter = new ArrayAdapter<String>(
-//                getActivity(),
-//                R.layout.item_movie,
-//                R.id.list_item_movie_textview,
-//                movieTop
-//        );
-//        mMovieAdapter = new ArrayAdapter<String>(
-//                getActivity(),
-//                R.layout.main_item,
-//                R.id.main_imageView,
-//                movieTop
-//        );
-
-
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-//        ListView listView = (ListView) rootView.findViewById(R.id.listview);
-//        listView.setAdapter(mMovieAdapter);
+        final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
-//        gridAdapter = new GridAdapter(getActivity(), movieBean.getResults());
-        gridView.setAdapter(gridAdapter);
+        FetchMovieTask movieTask = new FetchMovieTask();
+        movieTask.execute("top_rated");
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String detail_title = useResult.get(i).getTitle();
+                String detail_poster = useResult.get(i).getPoster_path();
+                String detail_releaseDate = useResult.get(i).getRelease_date();
+                double detail_vote = useResult.get(i).getVote_average();
+                String detail_overView = useResult.get(i).getOverview();
 
+
+                Intent intent = new Intent(getActivity(), DetailActivity.class)
+                        .putExtra("title", detail_title);
+                startActivity(intent);
+
+            }
+        });
         return rootView;
     }
 
@@ -170,9 +171,6 @@ public class MainActivityFragment extends Fragment {
                     return null;
                 }
                 movieJsonStr = buffer.toString();
-//                TODO 解决Gson问题
-//                getMovieDetail(movieJsonStr);
-//                Log.d(LOG_TAG, "doInBackground: " + forecastJsonStr);
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
                 // If the code didn't successfully get the weather data, there's no point in attemping
@@ -201,10 +199,12 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected void onPostExecute(List<MovieBean.ResultsBean> result) {
             if (result != null) {
-//                gridAdapter.clear();
                 gridAdapter = new GridAdapter(getActivity(), result);
                 gridView.setAdapter(gridAdapter);
                 gridAdapter.notifyDataSetChanged();
+
+                useResult = result;
+
 
             }
         }
