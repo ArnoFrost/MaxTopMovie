@@ -4,4 +4,26 @@
     <string name="action_refresh" translatable="false">Refresh</string>
     <string name="title_activity_movie__detail">Movie_Detail</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_setting">SettingActivity</string>
+
+
+    <!-- Label for the temperature units preference [CHAR LIMIT=30] -->
+    <string name="pref_type_label">Sort by</string>
+
+    <!-- Label for metric option in temperature unit preference [CHAR LIMIT=25] -->
+    <string name="pref_units_label_metric">Metric</string>
+
+    <!-- Label for imperial option in temperature unit preference [CHAR LIMIT=25] -->
+    <string name="pref_type_label_popular">popular</string>
+    <!-- Label for imperial option in temperature unit preference [CHAR LIMIT=25] -->
+    <string name="pref_type_label_top_rated">top_rated</string>
+
+    <!-- Key name for temperature unit preference in SharedPreferences [CHAR LIMIT=NONE] -->
+    <string name="pref_type_key" translatable="false">type</string>
+
+    <!-- Value in SharedPreferences for metric temperature unit option [CHAR LIMIT=NONE] -->
+    <string name="pref_type_popular" translatable="false">popular</string>
+
+    <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
+    <string name="pref_type_top_rated" translatable="false">top_rated</string>
 </resources>

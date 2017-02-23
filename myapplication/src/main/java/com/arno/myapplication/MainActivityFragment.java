@@ -1,8 +1,10 @@
 package com.arno.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.arno.myapplication.JsonUtil.getObject;
 
 /**
@@ -69,8 +72,13 @@ public class MainActivityFragment extends Fragment {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
+//            TODO 数据存储逻辑待解决
             FetchMovieTask movieTask = new FetchMovieTask();
-            movieTask.execute("top_rated");
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String type = prefs.getString("sourceType",
+                    "top_rated");
+            Log.d("test", "onOptionsItemSelected: " + type);
+            movieTask.execute(type);
 //          top_rated/popular
             return true;
         }
@@ -85,7 +93,9 @@ public class MainActivityFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
         FetchMovieTask movieTask = new FetchMovieTask();
-        movieTask.execute("top_rated");
+
+
+        movieTask.execute("popular");
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

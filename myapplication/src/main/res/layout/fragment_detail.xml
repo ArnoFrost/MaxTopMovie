@@ -12,54 +12,70 @@
     <TextView
         android:id="@+id/detail_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
+        android:layout_marginBottom="15dp"
         android:layout_weight="0.35"
         android:background="#07a69c"
         android:gravity="center_vertical"
+        android:paddingLeft="10dp"
         android:textColor="#FFFFFF"
         android:textSize="28sp"
         tools:text="1233" />
 
-    <RelativeLayout
-        android:id="@+id/detail_rela"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/detail_poster"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/poster" />
-
-        <TextView
-            android:id="@+id/detail_vote_average"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/datail_release_date"
-            android:layout_marginStart="14dp"
-            android:layout_marginTop="14dp"
-            android:layout_toEndOf="@+id/detail_poster"
-            android:text="8.7/10"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/datail_release_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/detail_vote_average"
-            android:layout_marginTop="44dp"
-            android:text="1972"
-            android:textSize="30sp" />
-    </RelativeLayout>
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="200dp">
+        android:layout_height="500dp"
+        android:layout_marginBottom="30dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:scrollbarStyle="outsideOverlay">
 
-        <TextView
-            android:id="@+id/detail_overView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/detail_rela"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/detail_poster"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/poster" />
+
+                <TextView
+                    android:id="@+id/detail_vote_average"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/datail_release_date"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginTop="14dp"
+                    android:layout_toEndOf="@+id/detail_poster"
+                    android:text="8.7/10"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/datail_release_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignStart="@+id/detail_vote_average"
+                    android:layout_marginTop="44dp"
+                    android:text="1972"
+                    android:textSize="30sp" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/detail_overView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+
     </ScrollView>
 </LinearLayout>
