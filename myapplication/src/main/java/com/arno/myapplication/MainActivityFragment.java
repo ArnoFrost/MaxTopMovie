@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.GridView;
 import android.widget.ListView;
 
 import com.arno.myapplication.bean.MovieBean;
@@ -33,8 +34,11 @@ import static com.arno.myapplication.JsonUtil.getObject;
  * A placeholder fragment containing a simple view.
  */
 public class MainActivityFragment extends Fragment {
-    private ArrayAdapter<String> mForecastAdapter;
-    private ArrayAdapter<String> mMovieAdapter;
+    //    private ArrayAdapter<String> mMovieAdapter;
+    private GridAdapter gridAdapter;
+    private GridView gridView;
+    MovieBean movieBean = new MovieBean();
+
 
     public MainActivityFragment() {
     }
@@ -73,35 +77,39 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        String[] data = {
-                "Mon 6/23 - Sunny - 31/17",
-                "Tue 6/24 - Foggy - 21/8",
-                "Wed 6/25 - Cloudy - 22/17",
-                "Thurs 6/26 - Rainy - 18/11",
-                "Fri 6/27 - Foggy - 21/10",
-                "Sat 6/28 - TRAPPED IN WEATHERSTATION - 23/18",
-                "Sun 6/29 - Sunny - 20/7"
-        };
-        List<String> movieTop = new ArrayList<String>(Arrays.asList(data));
-        mMovieAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                R.layout.item_movie,
-                R.id.list_item_movie_textview,
-                movieTop
-        );
+//        String[] data = {"请连接网络并刷新"};
+
+//        List<String> movieTop = new ArrayList<String>(Arrays.asList(data));
+//        mMovieAdapter = new ArrayAdapter<String>(
+//                getActivity(),
+//                R.layout.item_movie,
+//                R.id.list_item_movie_textview,
+//                movieTop
+//        );
+//        mMovieAdapter = new ArrayAdapter<String>(
+//                getActivity(),
+//                R.layout.main_item,
+//                R.id.main_imageView,
+//                movieTop
+//        );
+
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        ListView listView = (ListView) rootView.findViewById(R.id.listview);
-        listView.setAdapter(mMovieAdapter);
+//        ListView listView = (ListView) rootView.findViewById(R.id.listview);
+//        listView.setAdapter(mMovieAdapter);
+        gridView = (GridView) rootView.findViewById(R.id.gridView);
+//        gridAdapter = new GridAdapter(getActivity(), movieBean.getResults());
+        gridView.setAdapter(gridAdapter);
+
         return rootView;
     }
 
-    public class FetchMovieTask extends AsyncTask<String, Void, String[]> {
+    public class FetchMovieTask extends AsyncTask<String, Void, List<MovieBean.ResultsBean>> {
 
         private final String LOG_TAG = this.getClass().getSimpleName();
 
         @Override
-        protected String[] doInBackground(String... params) {
+        protected List<MovieBean.ResultsBean> doInBackground(String... params) {
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
             if (params.length == 0) {
@@ -113,9 +121,9 @@ public class MainActivityFragment extends Fragment {
             // Will contain the raw JSON response as a string.
             String movieJsonStr = null;
             String language = "zh";
-            String key = "4fdda96b2d325b623e85842ddce5ddd4";
-//            http://api.themoviedb.org/3/movie/popular?language=zh&api_key=4fdda96b2d325b623e85842ddce5ddd4
-//            http://api.themoviedb.org/3/movie/top_rated?language=zh&api_key=4fdda96b2d325b623e85842ddce5ddd4
+//            String key = "4fdda96b2d325b623e85842ddce5ddd4";
+//            http://api.themoviedb.org/3/movie/popular?language=zh&api_key=
+//            http://api.themoviedb.org/3/movie/top_rated?language=zh&api_key=
             try {
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
@@ -129,7 +137,7 @@ public class MainActivityFragment extends Fragment {
 
                 Uri builtUri = Uri.parse(USE_URL).buildUpon()
                         .appendQueryParameter(LANGUAGE_PARAM, language)
-                        .appendQueryParameter(API_STR, key)
+                        .appendQueryParameter(API_STR, BuildConfig.MyApiKey)
                         .build();
 
                 URL url = new URL(builtUri.toString());
@@ -191,18 +199,20 @@ public class MainActivityFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(String[] result) {
-            if (result != null){
-                mMovieAdapter.clear();
-                for (String movieText : result){
-                    mMovieAdapter.add(movieText);
-                }
+        protected void onPostExecute(List<MovieBean.ResultsBean> result) {
+            if (result != null) {
+//                gridAdapter.clear();
+                gridAdapter = new GridAdapter(getActivity(), result);
+                gridView.setAdapter(gridAdapter);
+                gridAdapter.notifyDataSetChanged();
+
             }
         }
+
     }
 
     //  自定义解析电影所需信息方法
-    public static String[] getMovieDetail(String movieJsonstr) {
+    public static List<MovieBean.ResultsBean> getMovieDetail(String movieJsonstr) {
 //      海报路径
         String poster_path;
 //       剧情简介
@@ -214,10 +224,12 @@ public class MainActivityFragment extends Fragment {
 //      评分
         double vote_average;
 
+
         MovieBean movieBean = getObject(movieJsonstr, MovieBean.class);
+//        TODO Picasso加载问题待解决
 //        Log.d("test", "getMovieDetail: " + movieBean.getResults());
         List<MovieBean.ResultsBean> resultBean = movieBean.getResults();
-        String[] resultStrs = new String[resultBean.size()];
+//        String[] resultStrs = new String[resultBean.size()];
         for (int i = 0; i < resultBean.size(); i++) {
             MovieBean.ResultsBean useResultBean = resultBean.get(i);
             title = useResultBean.getTitle();
@@ -225,10 +237,10 @@ public class MainActivityFragment extends Fragment {
             overview = useResultBean.getOverview();
             vote_average = useResultBean.getVote_average();
             release_date = useResultBean.getRelease_date();
-            resultStrs[i] = title + poster_path + overview + vote_average + release_date;
-            Log.d("test", "getMovieDetail: " + title);
+//            resultStrs[i] = poster_path;
+            Log.d("test", "getMovieDetail: " + poster_path);
         }
-        return resultStrs;
+        return resultBean;
     }
 
 

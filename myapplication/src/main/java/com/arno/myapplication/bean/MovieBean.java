@@ -49,9 +49,11 @@ public class MovieBean {
         private String release_date;
         private String title;
         private double vote_average;
+        final String POSTER_BASEURL = "https://image.tmdb.org/t/p/";
+        final String POSTER_PARAM = "w780";
 
         public String getPoster_path() {
-            return poster_path;
+            return POSTER_BASEURL + POSTER_PARAM + poster_path;
         }
 
         public void setPoster_path(String poster_path) {
