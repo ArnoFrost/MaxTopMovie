@@ -97,7 +97,11 @@ public class MainActivityFragment extends Fragment {
 
 
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra("title", detail_title);
+                        .putExtra("detail_title", detail_title)
+                        .putExtra("detail_poster", detail_poster)
+                        .putExtra("detail_releaseDate", detail_releaseDate)
+                        .putExtra("detail_vote", detail_vote)
+                        .putExtra("detail_overView", detail_overView);
                 startActivity(intent);
 
             }
@@ -226,20 +230,18 @@ public class MainActivityFragment extends Fragment {
 
 
         MovieBean movieBean = getObject(movieJsonstr, MovieBean.class);
-//        TODO Picasso加载问题待解决
-//        Log.d("test", "getMovieDetail: " + movieBean.getResults());
         List<MovieBean.ResultsBean> resultBean = movieBean.getResults();
 //        String[] resultStrs = new String[resultBean.size()];
-        for (int i = 0; i < resultBean.size(); i++) {
-            MovieBean.ResultsBean useResultBean = resultBean.get(i);
-            title = useResultBean.getTitle();
-            poster_path = useResultBean.getPoster_path();
-            overview = useResultBean.getOverview();
-            vote_average = useResultBean.getVote_average();
-            release_date = useResultBean.getRelease_date();
+//        for (int i = 0; i < resultBean.size(); i++) {
+//            MovieBean.ResultsBean useResultBean = resultBean.get(i);
+//            title = useResultBean.getTitle();
+//            poster_path = useResultBean.getPoster_path();
+//            overview = useResultBean.getOverview();
+//            vote_average = useResultBean.getVote_average();
+//            release_date = useResultBean.getRelease_date();
 //            resultStrs[i] = poster_path;
-            Log.d("test", "getMovieDetail: " + poster_path);
-        }
+//            Log.d("test", "getMovieDetail: " + poster_path);
+//        }
         return resultBean;
     }
 
