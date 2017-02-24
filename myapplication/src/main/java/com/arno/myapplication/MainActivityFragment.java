@@ -1,13 +1,14 @@
 package com.arno.myapplication;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -15,12 +16,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.ImageView;
 
+import com.arno.myapplication.adapter.GridAdapter;
 import com.arno.myapplication.bean.MovieBean;
 
 import java.io.BufferedReader;
@@ -29,21 +30,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static android.content.Context.MODE_PRIVATE;
-import static com.arno.myapplication.JsonUtil.getObject;
+import static com.arno.myapplication.util.JsonUtil.getObject;
+import static java.lang.Math.floor;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+
 public class MainActivityFragment extends Fragment {
-    //    private ArrayAdapter<String> mMovieAdapter;
+    //    声明全局GridView和Adapter
     private GridAdapter gridAdapter;
     private GridView gridView;
-    //    缓存Bean
+    //    声明缓存Bean实体
     List<MovieBean.ResultsBean> useResult = null;
 
 
@@ -60,6 +57,7 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+
         inflater.inflate(R.menu.menu_fragment, menu);
     }
 
@@ -70,16 +68,15 @@ public class MainActivityFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-//            TODO 数据存储逻辑待解决
+//            执行AsyncTask任务
             FetchMovieTask movieTask = new FetchMovieTask();
+//          从sharedPrefrence获取数据
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String type = prefs.getString("sourceType",
-                    "top_rated");
-            Log.d("test", "onOptionsItemSelected: " + type);
+            String type = prefs.getString(getString(R.string.pref_type_key),
+                    getString(R.string.pref_type_popular));
             movieTask.execute(type);
-//          top_rated/popular
+//          type 值可为 top_rated或popular
             return true;
         }
 
@@ -91,21 +88,29 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
         gridView = (GridView) rootView.findViewById(R.id.gridView);
+//            自动执行AsyncTask任务
         FetchMovieTask movieTask = new FetchMovieTask();
+//          从sharedPrefrence获取数据
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String type = prefs.getString(getString(R.string.pref_type_key),
+                getString(R.string.pref_type_popular));
+        //          type 值可为 top_rated或popular
+        movieTask.execute(type);
 
-
-        movieTask.execute("popular");
+        //  为GridView绑定监听
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//              将缓存Bean中的数据赋值
                 String detail_title = useResult.get(i).getTitle();
                 String detail_poster = useResult.get(i).getPoster_path();
                 String detail_releaseDate = useResult.get(i).getRelease_date();
                 double detail_vote = useResult.get(i).getVote_average();
                 String detail_overView = useResult.get(i).getOverview();
 
-
+//              通过Intent传入到详情页面
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
                         .putExtra("detail_title", detail_title)
                         .putExtra("detail_poster", detail_poster)
@@ -119,9 +124,11 @@ public class MainActivityFragment extends Fragment {
         return rootView;
     }
 
+    //  获取电影数据异步方法
+//    传入Type ，返回数据的实体bean的List
     public class FetchMovieTask extends AsyncTask<String, Void, List<MovieBean.ResultsBean>> {
-
-        private final String LOG_TAG = this.getClass().getSimpleName();
+        //        测试保留标签
+        final String LOG_TAG = this.getClass().getSimpleName();
 
         @Override
         protected List<MovieBean.ResultsBean> doInBackground(String... params) {
@@ -135,18 +142,19 @@ public class MainActivityFragment extends Fragment {
 
             // Will contain the raw JSON response as a string.
             String movieJsonStr = null;
-            String language = "zh";
-//            String key = "4fdda96b2d325b623e85842ddce5ddd4";
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String language = prefs.getString(getString(R.string.pref_language_key), getString(R.string.pref_language_en));
+
 //            http://api.themoviedb.org/3/movie/popular?language=zh&api_key=
 //            http://api.themoviedb.org/3/movie/top_rated?language=zh&api_key=
             try {
-                // Construct the URL for the OpenWeatherMap query
-                // Possible parameters are avaiable at OWM's forecast API page, at
-                // http://openweathermap.org/API#forecast
-
+//               获取电影API请求基本地址
                 final String MOVIE_BASEURL = "https://api.themoviedb.org/3/movie/";
+//                需要的请求地址后缀
                 String USE_URL = MOVIE_BASEURL + params[0] + "?";
+//                语言
                 final String LANGUAGE_PARAM = "language";
+//                Key
                 final String API_STR = "api_key";
 
 
@@ -156,24 +164,26 @@ public class MainActivityFragment extends Fragment {
                         .build();
 
                 URL url = new URL(builtUri.toString());
-                Log.d(LOG_TAG, "doInBackground: " + url);
+//                保留测试路径正确调试方法
+//                Log.d(LOG_TAG, "doInBackground: " + url);
 
-                // Create the request to OpenWeatherMap, and open the connection
+//                创建电影数据的请求,并打开连接
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
 
-                // Read the input stream into a String
+//                将读到的数据流写入String
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
-                    // Nothing to do.
+                    // 如果为空则略过下面步骤
                     return null;
                 }
                 reader = new BufferedReader(new InputStreamReader(inputStream));
 
                 String line;
                 while ((line = reader.readLine()) != null) {
+//                    关于换行
                     // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
                     // But it does make debugging a *lot* easier if you print out the completed
                     // buffer for debugging.
@@ -181,21 +191,22 @@ public class MainActivityFragment extends Fragment {
                 }
 
                 if (buffer.length() == 0) {
-                    // Stream was empty.  No point in parsing.
+                    // 如果为空则略过下面步骤
                     return null;
                 }
                 movieJsonStr = buffer.toString();
             } catch (IOException e) {
                 Log.e(LOG_TAG, "Error ", e);
-                // If the code didn't successfully get the weather data, there's no point in attemping
-                // to parse it.
+                // 如果没有得到信息则不进行下一步转换
                 return null;
             } finally {
                 if (urlConnection != null) {
+//                    关闭网络连接
                     urlConnection.disconnect();
                 }
                 if (reader != null) {
                     try {
+//                        关闭流
                         reader.close();
                     } catch (final IOException e) {
                         Log.e(LOG_TAG, "Error closing stream", e);
@@ -210,13 +221,14 @@ public class MainActivityFragment extends Fragment {
             return null;
         }
 
+        //      将获取的Bean配置到适配器中并刷新
         @Override
         protected void onPostExecute(List<MovieBean.ResultsBean> result) {
             if (result != null) {
                 gridAdapter = new GridAdapter(getActivity(), result);
                 gridView.setAdapter(gridAdapter);
                 gridAdapter.notifyDataSetChanged();
-
+//              将获取的数据存到页面的Bean中
                 useResult = result;
 
 
@@ -237,21 +249,11 @@ public class MainActivityFragment extends Fragment {
         String title;
 //      评分
         double vote_average;
-
-
+//      将Json字符串存到实体Bean中
         MovieBean movieBean = getObject(movieJsonstr, MovieBean.class);
+//      获得到结果Result的List集合
         List<MovieBean.ResultsBean> resultBean = movieBean.getResults();
-//        String[] resultStrs = new String[resultBean.size()];
-//        for (int i = 0; i < resultBean.size(); i++) {
-//            MovieBean.ResultsBean useResultBean = resultBean.get(i);
-//            title = useResultBean.getTitle();
-//            poster_path = useResultBean.getPoster_path();
-//            overview = useResultBean.getOverview();
-//            vote_average = useResultBean.getVote_average();
-//            release_date = useResultBean.getRelease_date();
-//            resultStrs[i] = poster_path;
-//            Log.d("test", "getMovieDetail: " + poster_path);
-//        }
+//       返回结果Bean的List集合
         return resultBean;
     }
 

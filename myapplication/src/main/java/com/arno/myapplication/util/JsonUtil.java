@@ -1,4 +1,4 @@
-package com.arno.myapplication;
+package com.arno.myapplication.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

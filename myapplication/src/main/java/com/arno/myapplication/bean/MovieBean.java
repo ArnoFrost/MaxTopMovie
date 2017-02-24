@@ -52,6 +52,7 @@ public class MovieBean {
         final String POSTER_BASEURL = "https://image.tmdb.org/t/p/";
         final String POSTER_PARAM = "w780";
 
+
         public String getPoster_path() {
             return POSTER_BASEURL + POSTER_PARAM + poster_path;
         }

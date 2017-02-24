@@ -7,10 +7,5 @@
     tools:context="com.arno.myapplication.SettingActivityFragment"
     tools:showIn="@layout/activity_setting">
 
-    <Button
-        android:id="@+id/btn_setType"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="showSingleAlertDialog"
-        android:text="排序方式" />
+
 </RelativeLayout>

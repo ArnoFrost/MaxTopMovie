@@ -1,4 +1,4 @@
-package com.arno.myapplication;
+package com.arno.myapplication.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.arno.myapplication.R;
 import com.arno.myapplication.bean.MovieBean;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -17,6 +18,7 @@ import java.util.List;
 
 /**
  * Created by david on 2017/2/23 0023.
+ * 自定义Picasso的GridView适配器
  */
 
 public class GridAdapter extends BaseAdapter {
@@ -62,7 +64,7 @@ public class GridAdapter extends BaseAdapter {
 
         Picasso.with(mContext)
                 .load(mList.get(position).getPoster_path())
-                .placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.drawable.loading1)
                 .into(holder.image, new Callback() {
                     @Override
                     public void onSuccess() {

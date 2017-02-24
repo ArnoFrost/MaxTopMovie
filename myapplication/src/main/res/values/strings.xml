@@ -8,22 +8,31 @@
 
 
     <!-- Label for the temperature units preference [CHAR LIMIT=30] -->
-    <string name="pref_type_label">Sort by</string>
+    <string name="pref_type_label">Sort order</string>
 
-    <!-- Label for metric option in temperature unit preference [CHAR LIMIT=25] -->
-    <string name="pref_units_label_metric">Metric</string>
 
     <!-- Label for imperial option in temperature unit preference [CHAR LIMIT=25] -->
     <string name="pref_type_label_popular">popular</string>
     <!-- Label for imperial option in temperature unit preference [CHAR LIMIT=25] -->
     <string name="pref_type_label_top_rated">top_rated</string>
 
+
     <!-- Key name for temperature unit preference in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_type_key" translatable="false">type</string>
+
 
     <!-- Value in SharedPreferences for metric temperature unit option [CHAR LIMIT=NONE] -->
     <string name="pref_type_popular" translatable="false">popular</string>
 
+
     <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
     <string name="pref_type_top_rated" translatable="false">top_rated</string>
+
+    <string name="pref_language_label">Language</string>
+    <string name="pref_language_label_en">English</string>
+    <string name="pref_language_label_zh">简体中文</string>
+    <string name="pref_language_key" translatable="false">language</string>
+    <string name="pref_language_en" translatable="false">en</string>
+    <string name="pref_language_zh" translatable="false">zh</string>
+
 </resources>
