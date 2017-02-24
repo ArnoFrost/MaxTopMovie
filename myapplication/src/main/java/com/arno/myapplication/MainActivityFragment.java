@@ -3,6 +3,8 @@ package com.arno.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.arno.myapplication.adapter.GridAdapter;
 import com.arno.myapplication.bean.MovieBean;
@@ -123,6 +126,13 @@ public class MainActivityFragment extends Fragment {
         });
         return rootView;
     }
+//      检查网络连接
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
+    }
 
     //  获取电影数据异步方法
 //    传入Type ，返回数据的实体bean的List
@@ -132,8 +142,13 @@ public class MainActivityFragment extends Fragment {
 
         @Override
         protected List<MovieBean.ResultsBean> doInBackground(String... params) {
+//            检查网络连接
+            if (isOnline() == false) {
+                return null;
+            }
             // These two need to be declared outside the try/catch
             // so that they can be closed in the finally block.
+
             if (params.length == 0) {
                 return null;
             }
