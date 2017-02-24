@@ -11,9 +11,9 @@
     <string name="pref_type_label">Sort order</string>
 
 
-    <!-- Label for type option in temperature unit preference [CHAR LIMIT=25] -->
+    <!-- Label for type option in popular preference [CHAR LIMIT=25] -->
     <string name="pref_type_label_popular">Popular</string>
-    <!-- Label for type option in temperature unit preference [CHAR LIMIT=25] -->
+    <!-- Label for type option in top_rated preference [CHAR LIMIT=25] -->
     <string name="pref_type_label_top_rated">TopRated</string>
 
 
@@ -21,11 +21,11 @@
     <string name="pref_type_key" translatable="false">type</string>
 
 
-    <!-- Value in SharedPreferences for metric temperature unit option [CHAR LIMIT=NONE] -->
+    <!-- Value in SharedPreferences for popular option [CHAR LIMIT=NONE] -->
     <string name="pref_type_popular" translatable="false">popular</string>
 
 
-    <!-- Value in SharedPreferences for imperial temperature unit option [CHAR LIMIT=NONE] -->
+    <!-- Value in SharedPreferences for top_rated option [CHAR LIMIT=NONE] -->
     <string name="pref_type_top_rated" translatable="false">top_rated</string>
 
     <string name="pref_language_label">Language</string>
