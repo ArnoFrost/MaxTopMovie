@@ -6,7 +6,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 
 import java.lang.reflect.Type;
-
+//Gson工具类
 public class GsonBooleanDeserializer implements JsonDeserializer<Object> {
 
 	@Override

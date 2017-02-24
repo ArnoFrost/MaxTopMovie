@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+//Gson工具类
 public class JsonUtil {
 
 	public static String toJsonString(Object value) {

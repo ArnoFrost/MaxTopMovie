@@ -40,7 +40,7 @@ public class DetailActivityFragment extends Fragment {
 //           显示内容
             ((TextView) rootView.findViewById(R.id.detail_title)).setText(detail_title);
             ((TextView) rootView.findViewById(R.id.detail_vote_average)).setText(String.valueOf(detail_vote) + ADD_VOTE);
-            ((TextView) rootView.findViewById(R.id.detail_title)).setText(detail_title);
+            ((TextView) rootView.findViewById(R.id.datail_release_date)).setText(detail_releaseDate);
 //             Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
 
 //            Picasso.with(getContext()).load(detail_poster)
