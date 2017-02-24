@@ -18,10 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.arno.myapplication.adapter.GridAdapter;
@@ -35,14 +33,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.arno.myapplication.util.JsonUtil.getObject;
-import static java.lang.Math.floor;
 
 
 public class MainActivityFragment extends Fragment {
     //    声明全局GridView和Adapter
     private GridAdapter gridAdapter;
-    private GridView gridView;
+//    使用butterknife
+    @BindView(R.id.gridView)
+    GridView gridView;
     //    声明缓存Bean实体
     List<MovieBean.ResultsBean> useResult = null;
 
@@ -91,42 +93,35 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        gridView = (GridView) rootView.findViewById(R.id.gridView);
-//            自动执行AsyncTask任务
-        FetchMovieTask movieTask = new FetchMovieTask();
+        ButterKnife.bind(this, rootView);
+        if (!isOnline()) {
+            Toast.makeText(getContext(), "Sorry！No network", Toast.LENGTH_SHORT).show();
+        } else {
+            //            自动执行AsyncTask任务
+            FetchMovieTask movieTask = new FetchMovieTask();
 //          从sharedPrefrence获取数据
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String type = prefs.getString(getString(R.string.pref_type_key),
-                getString(R.string.pref_type_popular));
-        //          type 值可为 top_rated或popular
-        movieTask.execute(type);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String type = prefs.getString(getString(R.string.pref_type_key),
+                    getString(R.string.pref_type_popular));
+            //          type 值可为 top_rated或popular
+            movieTask.execute(type);
+        }
+
 
         //  为GridView绑定监听
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//              将缓存Bean中的数据赋值
-                String detail_title = useResult.get(i).getTitle();
-                String detail_poster = useResult.get(i).getPoster_path();
-                String detail_releaseDate = useResult.get(i).getRelease_date();
-                double detail_vote = useResult.get(i).getVote_average();
-                String detail_overView = useResult.get(i).getOverview();
-
 //              通过Intent传入到详情页面
-                Intent intent = new Intent(getActivity(), DetailActivity.class)
-                        .putExtra("detail_title", detail_title)
-                        .putExtra("detail_poster", detail_poster)
-                        .putExtra("detail_releaseDate", detail_releaseDate)
-                        .putExtra("detail_vote", detail_vote)
-                        .putExtra("detail_overView", detail_overView);
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                intent.putExtra("Movie", useResult.get(i));
                 startActivity(intent);
-
             }
         });
         return rootView;
     }
-//      检查网络连接
+
+    //      检查网络连接
     public boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -143,7 +138,7 @@ public class MainActivityFragment extends Fragment {
         @Override
         protected List<MovieBean.ResultsBean> doInBackground(String... params) {
 //            检查网络连接
-            if (isOnline() == false) {
+            if (!isOnline()) {
                 return null;
             }
             // These two need to be declared outside the try/catch

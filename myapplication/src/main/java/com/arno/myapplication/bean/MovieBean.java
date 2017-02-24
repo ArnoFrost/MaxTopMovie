@@ -1,5 +1,6 @@
 package com.arno.myapplication.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class MovieBean {
         this.results = results;
     }
 
-    public static class ResultsBean {
+    public static class ResultsBean implements Serializable {
         /**
          * poster_path : /AmbtHzH5kGt4dPTw2E4tBZQcLjz.jpg
          * adult : false

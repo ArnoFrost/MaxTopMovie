@@ -7,17 +7,17 @@
     <string name="title_activity_setting">SettingActivity</string>
 
 
-    <!-- Label for the temperature units preference [CHAR LIMIT=30] -->
+    <!-- Label for the movie sort by type preference [CHAR LIMIT=30] -->
     <string name="pref_type_label">Sort order</string>
 
 
-    <!-- Label for imperial option in temperature unit preference [CHAR LIMIT=25] -->
-    <string name="pref_type_label_popular">popular</string>
-    <!-- Label for imperial option in temperature unit preference [CHAR LIMIT=25] -->
-    <string name="pref_type_label_top_rated">top_rated</string>
+    <!-- Label for type option in temperature unit preference [CHAR LIMIT=25] -->
+    <string name="pref_type_label_popular">Popular</string>
+    <!-- Label for type option in temperature unit preference [CHAR LIMIT=25] -->
+    <string name="pref_type_label_top_rated">TopRated</string>
 
 
-    <!-- Key name for temperature unit preference in SharedPreferences [CHAR LIMIT=NONE] -->
+    <!-- Key name for type unit preference in SharedPreferences [CHAR LIMIT=NONE] -->
     <string name="pref_type_key" translatable="false">type</string>
 
 
