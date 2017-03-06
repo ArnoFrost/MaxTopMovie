@@ -1,6 +1,7 @@
 package com.arno.myapplication.data;
 
 import android.content.ComponentName;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
@@ -8,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.test.AndroidTestCase;
+import android.util.Log;
 
 /**
  * Created by david on 2017/3/6 0006.
@@ -48,6 +50,23 @@ public class TestProvider extends AndroidTestCase {
 
         db.delete(MovieContract.MovieEntry.TABLE_NAME, null, null);
         db.close();
+    }
+    public void deleteAllRecordsFromProvider() {
+        mContext.getContentResolver().delete(
+                MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                null
+        );
+        Cursor cursor = mContext.getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+        assertEquals("Error: Records not deleted from Movie table during delete", 0, cursor.getCount());
+        cursor.close();
+
     }
 
     public void testGetType() {
@@ -102,5 +121,65 @@ public class TestProvider extends AndroidTestCase {
                 weatherCursor, testValues);
 
 
+    }
+
+    public void testUpadteMovie(){
+        ContentValues values = TestUtilities.createMovieValues(123456);
+
+        Uri movieUri = mContext.getContentResolver()
+                .insert(MovieContract.MovieEntry.CONTENT_URI,values);
+        long id = ContentUris.parseId(movieUri);
+
+        assertTrue(id != -1);
+        Log.d(LOG_TAG, "testUpadteMovie: " + id);
+
+        ContentValues updateValues = new ContentValues(values);
+        updateValues.put(MovieContract.MovieEntry._ID , id);
+        updateValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_NAME,"Hellotest！！！");
+
+        Cursor movieCursor = mContext.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
+
+        TestUtilities.TestContentObserver tco = TestUtilities.getTestContentObserver();
+        movieCursor.registerContentObserver(tco);
+
+        int count = mContext.getContentResolver().update(
+                MovieContract.MovieEntry.CONTENT_URI,updateValues, MovieContract.MovieEntry._ID + "=? ",
+                new String[] {Long.toString(id)}
+        );
+        assertEquals(count, 1);
+        // Test to make sure our observer is called.  If not, we throw an assertion.
+        //
+        // Students: If your code is failing here, it means that your content provider
+        // isn't calling getContext().getContentResolver().notifyChange(uri, null);
+        tco.waitForNotificationOrFail();
+
+        movieCursor.unregisterContentObserver(tco);
+        movieCursor.close();
+
+        // A cursor is your primary interface to the query results.
+        Cursor cursor = mContext.getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI,
+                null,   // projection
+                MovieContract.MovieEntry._ID + " = " + id,
+                null,   // Values for the "where" clause
+                null    // sort order
+        );
+
+        TestUtilities.validateCursor("testUpdateLocation.  Error validating location entry update.",
+                cursor, updateValues);
+
+        cursor.close();
+    }
+    public void testDeleteRecords(){
+        testInsertReadProvider();
+        
+        TestUtilities.TestContentObserver movieObserber = TestUtilities.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(MovieContract.MovieEntry.CONTENT_URI,true ,movieObserber);
+
+        deleteAllRecordsFromProvider();
+
+        movieObserber.waitForNotificationOrFail();
+
+        mContext.getContentResolver().unregisterContentObserver(movieObserber);
     }
 }

@@ -112,7 +112,7 @@ public class TestDb extends AndroidTestCase {
 
         // Sixth Step: Close Cursor and Database
         cursor.close();
-        db.close();
+//        db.close();
         return movieRowId;
     }
 }
