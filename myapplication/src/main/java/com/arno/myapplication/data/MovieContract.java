@@ -11,7 +11,7 @@ public class MovieContract {
     public static final String CONTENT_AUTHORITY = "com.arno.myapplication";
     //Base
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-
+    //数据库位置
     public static final String PATH_MOVIE = "movie";
 
     public static final class MovieEntry implements BaseColumns {
@@ -20,10 +20,10 @@ public class MovieContract {
 
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_MOVIE;
-        public static final String CONTENT_ITEM_TYPE =
-                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + CONTENT_AUTHORITY;
         //表名
         public static final String TABLE_NAME = "movie";
+        //电影ID
+        public static final String COLUMN_MOVIE_ID = "movie_id";
         //电影名
         public static final String COLUMN_MOVIE_NAME = "movie_name";
         //上映日期
@@ -35,9 +35,11 @@ public class MovieContract {
         //电影简介
         public static final String COLUMN_MOVIE_OVERVIEW = "movie_overview";
         //电影预告
-        public static final String COLUMN_MOVIE_TRAILER = "movie_trailer";
+        public static final String COLUMN_MOVIE_VIDEOS = "movie_videos";
         //电影评论
-        public static final String COLUMN_MOVIE_COMMENT = "movie_comment";
+        public static final String COLUMN_MOVIE_REVIEW = "movie_review";
+        //电影时长
+        public static final String COLUMN_MOVIE_TIME = "movie_time";
         //电影收藏
         public static final String COLUMN_MOVIE_FAVORITE = "movie_favorite";
 

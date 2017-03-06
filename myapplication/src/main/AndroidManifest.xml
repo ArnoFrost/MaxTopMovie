@@ -36,7 +36,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.arno.myapplication.MainActivity" />
         </activity>
-        <activity android:name=".data.MovieContract"></activity>
+
+        <provider
+            android:name=".data.MovieProvider"
+            android:authorities="com.arno.myapplication" />
     </application>
+
 
 </manifest>

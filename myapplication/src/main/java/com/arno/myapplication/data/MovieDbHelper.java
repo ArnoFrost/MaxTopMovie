@@ -3,9 +3,6 @@ package com.arno.myapplication.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Movie;
-
-import com.arno.myapplication.data.MovieContract;
 
 /**
  * Created by david on 2017/3/6 0006.
@@ -24,8 +21,10 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
         final String SQL_CREATE_LOCATION_TABLE = "CREATE TABLE " + MovieContract.MovieEntry.TABLE_NAME + "(" +
-                //ID
+                //ROW_ID
                 MovieContract.MovieEntry._ID + " INTEGER PRIMARY KEY," +
+                //电影ID
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL," +
                 //电影名
                 MovieContract.MovieEntry.COLUMN_MOVIE_NAME + " TEXT NOT NULL," +
                 //上映日期
@@ -37,9 +36,11 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 //简介
                 MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW + " TEXT NOT NULL," +
                 //预告片地址
-                MovieContract.MovieEntry.COLUMN_MOVIE_TRAILER + " TEXT NOT NULL," +
+                MovieContract.MovieEntry.COLUMN_MOVIE_VIDEOS + " TEXT NOT NULL," +
                 //评论
-                MovieContract.MovieEntry.COLUMN_MOVIE_COMMENT + " TEXT NOT NULL," +
+                MovieContract.MovieEntry.COLUMN_MOVIE_REVIEW + " TEXT NOT NULL," +
+                //时长
+                MovieContract.MovieEntry.COLUMN_MOVIE_TIME + " REAL NOT NUll," +
                 //是否收藏
                 MovieContract.MovieEntry.COLUMN_MOVIE_FAVORITE + " INTEGER NOT NULL DEFAULT 0" +
                 ");";

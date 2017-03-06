@@ -1,12 +1,9 @@
-package com.arno.myapplication;
+package com.arno.myapplication.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
-
-import com.arno.myapplication.data.MovieContract;
-import com.arno.myapplication.data.MovieDbHelper;
 
 import java.util.HashSet;
 
@@ -53,14 +50,15 @@ public class TestDb extends AndroidTestCase {
         assertTrue("Error: This means that we were unable to query the database for table information.",
                 c.moveToFirst());
         final HashSet<String> movieColumnHashSet = new HashSet<String>();
-        movieColumnHashSet.add(MovieContract.MovieEntry._ID);
+        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_ID);
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_NAME);
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_DATE);
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE);
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER);
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW);
-        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_TRAILER);
-        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_COMMENT);
+        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_VIDEOS);
+        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_REVIEW);
+        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_TIME);
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_MOVIE_FAVORITE);
 
         int columnNameIndex = c.getColumnIndex("name");
@@ -79,8 +77,7 @@ public class TestDb extends AndroidTestCase {
 
         MovieDbHelper dbHelper = new MovieDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-// TODO帮助测试插入数据类待解决
-        ContentValues testValues = TestUtilities.createMovieValues();
+        ContentValues testValues = TestUtilities.createMovieValues(123456);
         long movieRowId;
         movieRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, testValues);
 

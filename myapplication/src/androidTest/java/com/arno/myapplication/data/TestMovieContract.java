@@ -1,4 +1,4 @@
-package com.arno.myapplication;
+package com.arno.myapplication.data;
 
 import android.net.Uri;
 import android.test.AndroidTestCase;
