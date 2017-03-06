@@ -56,6 +56,7 @@ public class DetailActivityFragment extends Fragment {
                 detail_vote.setText(String.valueOf(movie.getVote_average()) + ADD_VOTE);
                 detail_date.setText(movie.getRelease_date());
                 detail_overView.setText(movie.getOverview());
+                
 
 //            使用Picasso加载图片
 //             Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
