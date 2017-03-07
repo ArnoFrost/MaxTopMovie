@@ -80,10 +80,10 @@ public class MovieProvider extends ContentProvider {
                 break;
             }
             default:
-                throw  new UnsupportedOperationException("Unknow uri: "+uri);
+                throw new UnsupportedOperationException("Unknow uri: " + uri);
 
         }
-        retCursor.setNotificationUri(getContext().getContentResolver(),uri);
+        retCursor.setNotificationUri(getContext().getContentResolver(), uri);
         return retCursor;
     }
 
@@ -94,10 +94,10 @@ public class MovieProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
 
-        switch (match){
-            case MOVIE:{
-                long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME,null,contentValues);
-                if(_id>0)
+        switch (match) {
+            case MOVIE: {
+                long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
+                if (_id > 0)
                     returnUri = MovieContract.MovieEntry.buildMovieUri(_id);
                 else
                     throw new SQLiteException("Failed to insert row into " + uri);
@@ -107,27 +107,27 @@ public class MovieProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri " + uri);
         }
 
-        getContext().getContentResolver().notifyChange(uri,null);
+        getContext().getContentResolver().notifyChange(uri, null);
         return returnUri;
     }
 
     @Override
-    public int delete(Uri uri,  String selection,  String[] selectionArgs) {
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
 
-        if(null == selection)selection = "1";
-        switch (match){
+        if (null == selection) selection = "1";
+        switch (match) {
             case MOVIE:
                 rowsDeleted = db.delete(
-                        MovieContract.MovieEntry.TABLE_NAME,selection,selectionArgs);
+                        MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("Unkown uri:" + uri);
         }
 
-        if(rowsDeleted != 0){
+        if (rowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
@@ -154,6 +154,35 @@ public class MovieProvider extends ContentProvider {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsUpdated;
+    }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+
+        switch (match) {
+            case MOVIE:
+                db.beginTransaction();
+                int returnCount = 0;
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
+                        if (_id != -1) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                return returnCount;
+            default:
+                return super.bulkInsert(uri, values);
+        }
+
+
     }
 
     // You do not need to call this method. This is a method specifically to assist the testing
