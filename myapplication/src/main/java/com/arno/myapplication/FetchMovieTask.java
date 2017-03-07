@@ -1,7 +1,10 @@
 package com.arno.myapplication;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
@@ -9,6 +12,7 @@ import android.util.Log;
 
 import com.arno.myapplication.adapter.GridAdapter;
 import com.arno.myapplication.bean.MovieBean;
+import com.arno.myapplication.data.MovieContract;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
-import static com.arno.myapplication.MainActivityFragment.getMovieDetail;
+import static com.arno.myapplication.util.JsonUtil.getObject;
 
 /**
  * Created by david on 2017/3/7 0007.
@@ -36,7 +40,48 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<MovieBean.Resul
         this.mContext = mContext;
         this.mAdapter = mAdapter;
     }
+    long addMovie(int movieId, String movieName, String movieDate,
+                  double movieVote, String moviePoster,
+                  String movieOverview, String movieVideos,
+                  String movieReview, String movieTime,
+                  int favorite) {
 
+        long movieRowId;
+        Cursor movieCursor = mContext.getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI,
+                new String[]{MovieContract.MovieEntry._ID},
+                MovieContract.MovieEntry.COLUMN_MOVIE_NAME,
+                new String[]{movieName},
+                null
+        );
+
+        if (movieCursor.moveToFirst()) {
+            int movieIdIndex = movieCursor.getColumnIndex(MovieContract.MovieEntry._ID);
+            movieRowId = movieCursor.getLong(movieIdIndex);
+        } else {
+            ContentValues movieValues = new ContentValues();
+
+            movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_NAME, movieName);
+            movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_DATE, movieDate);
+            movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_VOTE, movieVote);
+            movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER, moviePoster);
+            movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW, movieOverview);
+            movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_VIDEOS, movieVideos);
+            movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_REVIEW, movieReview);
+            movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_TIME, movieTime);
+            movieValues.put(MovieContract.MovieEntry.COLUMN_MOVIE_FAVORITE, favorite);
+
+            Uri insertedUri = mContext.getContentResolver().insert(
+                    MovieContract.MovieEntry.CONTENT_URI,
+                    movieValues
+            );
+
+            movieRowId = ContentUris.parseId(insertedUri);
+        }
+        movieCursor.close();
+
+        return movieRowId;
+    }
 
     @Override
     protected List<MovieBean.ResultsBean> doInBackground(String... params) {
@@ -149,5 +194,36 @@ public class FetchMovieTask extends AsyncTask<String, Void, List<MovieBean.Resul
 
         }
     }
+
+    //  自定义解析电影所需信息方法
+    public static List<MovieBean.ResultsBean> getMovieDetail(String movieJsonstr) {
+//      海报路径
+        String poster_path;
+//       剧情简介
+        String overview;
+//      上映日期
+        String release_date;
+//      标题
+        String title;
+//      评分
+        double vote_average;
+//      TODO BEAN完善
+//      预告片
+//      评论
+//      时间
+
+//      将Json字符串存到实体Bean中
+        MovieBean movieBean = getObject(movieJsonstr, MovieBean.class);
+
+//        TODO
+        for(int i = 0 ;i < movieBean.getResults().size();i++){
+            
+        }
+//      获得到结果Result的List集合
+        List<MovieBean.ResultsBean> resultBean = movieBean.getResults();
+//       返回结果Bean的List集合
+        return resultBean;
+    }
+
 
 }

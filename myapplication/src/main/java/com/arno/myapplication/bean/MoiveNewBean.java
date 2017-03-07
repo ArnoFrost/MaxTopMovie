@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by david on 2017/2/22 0022.
+ * Created by david on 2017/3/7 0007.
  */
 
-public class MovieBean {
+public class MoiveNewBean {
 
 
     /**
@@ -17,13 +17,13 @@ public class MovieBean {
      * total_pages : 982
      */
 
-    private List<ResultsBean> results;
+    private List<com.arno.myapplication.bean.MovieBean.ResultsBean> results;
 
-    public List<ResultsBean> getResults() {
+    public List<com.arno.myapplication.bean.MovieBean.ResultsBean> getResults() {
         return results;
     }
 
-    public void setResults(List<ResultsBean> results) {
+    public void setResults(List<com.arno.myapplication.bean.MovieBean.ResultsBean> results) {
         this.results = results;
     }
 
@@ -44,6 +44,43 @@ public class MovieBean {
          * video : false
          * vote_average : 5.1
          */
+        private int id;
+        private int time;
+        private String comment;
+        private String video;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public int getTime() {
+            return time;
+        }
+
+        public void setTime(int time) {
+            this.time = time;
+        }
+
+        public String getComment() {
+            return comment;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
+
+        public String getVideo() {
+            return video;
+        }
+
+        public void setVideo(String video) {
+            this.video = video;
+        }
+
         private String poster_path;
         private String overview;
         private String release_date;
@@ -93,4 +130,6 @@ public class MovieBean {
             this.vote_average = vote_average;
         }
     }
+
+
 }

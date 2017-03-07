@@ -131,25 +131,6 @@ public class MainActivityFragment extends Fragment {
 
 
 
-    //  自定义解析电影所需信息方法
-    public static List<MovieBean.ResultsBean> getMovieDetail(String movieJsonstr) {
-//      海报路径
-        String poster_path;
-//       剧情简介
-        String overview;
-//      上映日期
-        String release_date;
-//      标题
-        String title;
-//      评分
-        double vote_average;
-//      将Json字符串存到实体Bean中
-        MovieBean movieBean = getObject(movieJsonstr, MovieBean.class);
-//      获得到结果Result的List集合
-        List<MovieBean.ResultsBean> resultBean = movieBean.getResults();
-//       返回结果Bean的List集合
-        return resultBean;
-    }
 
 
 }
