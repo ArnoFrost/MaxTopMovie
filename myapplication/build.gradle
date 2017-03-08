@@ -21,6 +21,8 @@ android {
         }
         buildTypes.each {
             it.buildConfigField "String", "MyApiKey", '"4fdda96b2d325b623e85842ddce5ddd4"'
+//            it.buildConfigField "String", "MyApiKey", '"5039bffadb9e7b63e94b5003fc59af10"'
+
         }
     }
 }

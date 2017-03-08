@@ -126,12 +126,18 @@
             android:visibility="invisible"
             android:id="@+id/videos_des_tv"
             />
-        <com.artyhacker.popularmovies.ui.UnScrollListView
+        <com.arno.myapplication.UnScrollListView
             android:id="@+id/movie_trailers_lv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/details_content_margin"
-            ></com.artyhacker.popularmovies.ui.UnScrollListView>
+            />
+        <com.arno.myapplication.UnScrollListView
+            android:id="@+id/movie_trailers_lv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/details_content_margin"
+        />
 
 
 
