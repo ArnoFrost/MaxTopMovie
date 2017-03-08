@@ -1,16 +1,19 @@
 package com.arno.myapplication;
 
+import android.app.Fragment;
+import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.Loader;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,252 +23,256 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
-import com.arno.myapplication.adapter.GridAdapter;
+import com.arno.myapplication.adapter.MovieListAdapter;
 import com.arno.myapplication.bean.MovieBean;
+import com.arno.myapplication.data.BaseConfig;
+import com.arno.myapplication.data.MovieContract;
+import com.arno.myapplication.sync.MovieSyncAdapter;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
-import static com.arno.myapplication.util.JsonUtil.getObject;
+import java.util.ArrayList;
 
 
-public class MainActivityFragment extends Fragment {
-    //    声明全局GridView和Adapter
-    private GridAdapter gridAdapter;
-//    使用butterknife
-    @BindView(R.id.gridView)
-    GridView gridView;
-    //    声明缓存Bean实体
-    List<MovieBean.ResultsBean> useResult = null;
+public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
+    private int mPosition = GridView.INVALID_POSITION;
+    private static final String SELECTED_KEY = "selected_position";
+    private static String movieType = "";
+    public static final int MOVIE_LOADER_ID = 0;
+    public static boolean isFavoriteList = false;
+
+    public static final String IS_FIRST_SWICH = "ifs"; //标记是否第一次切换POP/TOP
+
+
+    private ArrayList<MovieBean> movieBeanArray;
+    private GridView gridView;
+
+    private MovieListAdapter mMovieListAdapter;
+
+    private static final String[] MOVIE_COLUMNS = {
+            MovieContract.MovieEntry.COLUMN_ID,
+            MovieContract.MovieEntry.COLUME_TITLE,
+            MovieContract.MovieEntry.COLUME_IMAGE,
+            MovieContract.MovieEntry.COLUMN_OVERVIEW,
+            MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE,
+            MovieContract.MovieEntry.COLUMN_RELASE_DATE,
+            MovieContract.MovieEntry.COLUMN_POPULARITY,
+            MovieContract.MovieEntry.COLUMN_GET_TYPE,
+            MovieContract.MovieEntry.COLUMN_RUNTIME,
+            MovieContract.MovieEntry.COLUMN_VIDEOS,
+            MovieContract.MovieEntry.COLUMN_REVIEWS
+    };
+
+    public static final int COL_MOVIE_ID = 0;
+    public static final int COL_MOVIE_TITLE = 1;
+    public static final int COL_MOVIE_IMAGE = 2;
+    public static final int COL_MOVIE_OVERVIEW = 3;
+    public static final int COL_MOVIE_VOTE_AVERAGE = 4;
+    public static final int COL_MOVIE_RELEASE_DATE = 5;
+    public static final int COL_MOVIE_POPULARITY = 6;
+    public static final int COL_MOVIE_GET_TYPE = 7;
+    public static final int COL_MOVIE_RUNTIME = 8;
+    public static final int COL_MOVIE_VIDEOS = 9;
+    public static final int COL_MOVIE_REVIEWS = 10;
 
     public MainActivityFragment() {
+
     }
 
+    public interface mCallback {
+        public void onItemSelect(Uri movieUri);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+
         setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.menu_fragment, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.action_refresh) {
-//            执行AsyncTask任务
-            FetchMovieTask movieTask = new FetchMovieTask();
-//          从sharedPrefrence获取数据
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String type = prefs.getString(getString(R.string.pref_type_key),
-                    getString(R.string.pref_type_popular));
-            movieTask.execute(type);
-//          type 值可为 top_rated或popular
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        movieBeanArray = new ArrayList<MovieBean>();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mMovieListAdapter = new MovieListAdapter(getActivity(), null, 0);
+        View rootView = inflater.inflate(R.layout.fragment_popular_movies, container, false);
+        gridView = (GridView) rootView.findViewById(R.id.fragment_grid_layout);
+        gridView.setAdapter(mMovieListAdapter);
+        gridView.setOnItemClickListener(this);
 
-        final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        ButterKnife.bind(this, rootView);
-        if (!isOnline()) {
-            Toast.makeText(getContext(), "Sorry！No network", Toast.LENGTH_SHORT).show();
-        } else {
-            //            自动执行AsyncTask任务
-            FetchMovieTask movieTask = new FetchMovieTask();
-//          从sharedPrefrence获取数据
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String type = prefs.getString(getString(R.string.pref_type_key),
-                    getString(R.string.pref_type_popular));
-            //          type 值可为 top_rated或popular
-            movieTask.execute(type);
+        if (savedInstanceState != null && savedInstanceState.containsKey(SELECTED_KEY)) {
+            mPosition = savedInstanceState.getInt(SELECTED_KEY);
         }
-
-
-        //  为GridView绑定监听
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//              通过Intent传入到详情页面
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("Movie", useResult.get(i));
-                startActivity(intent);
-            }
-        });
+        getMovieListInLocal();
         return rootView;
     }
 
-    //      检查网络连接
-    public boolean isOnline() {
-        ConnectivityManager cm =
-                (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnected();
+    private void getMovieListInLocal() {
+        movieType = BaseConfig.getMovieType(getActivity());
+        getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
     }
 
-    //  获取电影数据异步方法
-//    传入Type ，返回数据的实体bean的List
-    public class FetchMovieTask extends AsyncTask<String, Void, List<MovieBean.ResultsBean>> {
-        //        测试保留标签
-        final String LOG_TAG = this.getClass().getSimpleName();
 
-        @Override
-        protected List<MovieBean.ResultsBean> doInBackground(String... params) {
-//            检查网络连接
-            if (!isOnline()) {
-                return null;
-            }
-            // These two need to be declared outside the try/catch
-            // so that they can be closed in the finally block.
-
-            if (params.length == 0) {
-                return null;
-            }
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
-
-            // Will contain the raw JSON response as a string.
-            String movieJsonStr = null;
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-            String language = prefs.getString(getString(R.string.pref_language_key), getString(R.string.pref_language_en));
-
-//            http://api.themoviedb.org/3/movie/popular?language=zh&api_key=
-//            http://api.themoviedb.org/3/movie/top_rated?language=zh&api_key=
-            try {
-//               获取电影API请求基本地址
-                final String MOVIE_BASEURL = "https://api.themoviedb.org/3/movie/";
-//                需要的请求地址后缀
-                String USE_URL = MOVIE_BASEURL + params[0] + "?";
-//                语言
-                final String LANGUAGE_PARAM = "language";
-//                Key
-                final String API_STR = "api_key";
-
-
-                Uri builtUri = Uri.parse(USE_URL).buildUpon()
-                        .appendQueryParameter(LANGUAGE_PARAM, language)
-                        .appendQueryParameter(API_STR, BuildConfig.MyApiKey)
-                        .build();
-
-                URL url = new URL(builtUri.toString());
-//                保留测试路径正确调试方法
-//                Log.d(LOG_TAG, "doInBackground: " + url);
-
-//                创建电影数据的请求,并打开连接
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-//                将读到的数据流写入String
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                if (inputStream == null) {
-                    // 如果为空则略过下面步骤
-                    return null;
-                }
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-//                    关于换行
-                    // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                    // But it does make debugging a *lot* easier if you print out the completed
-                    // buffer for debugging.
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    // 如果为空则略过下面步骤
-                    return null;
-                }
-                movieJsonStr = buffer.toString();
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Error ", e);
-                // 如果没有得到信息则不进行下一步转换
-                return null;
-            } finally {
-                if (urlConnection != null) {
-//                    关闭网络连接
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-//                        关闭流
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
-                }
-            }
-            try {
-                return getMovieDetail(movieJsonStr);
-            } catch (Exception e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
-            }
-            return null;
+    @Override
+    public void onItemClick(AdapterView adapterView, View view, int position, long id) {
+        Cursor cursor = (Cursor) adapterView.getItemAtPosition(position);
+        if (cursor != null) {
+            ((mCallback) getActivity())
+                    .onItemSelect(Uri.parse(MovieContract.CONTENT_BASE_URI + "/" + id));
         }
-
-        //      将获取的Bean配置到适配器中并刷新
-        @Override
-        protected void onPostExecute(List<MovieBean.ResultsBean> result) {
-            if (result != null) {
-                gridAdapter = new GridAdapter(getActivity(), result);
-                gridView.setAdapter(gridAdapter);
-                gridAdapter.notifyDataSetChanged();
-//              将获取的数据存到页面的Bean中
-                useResult = result;
+        mPosition = position;
+    }
 
 
+    private void getMoviesList() {
+
+        /*requestSync*/
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+
+        settingsBundle.putString("movieType", BaseConfig.getMovieType(getActivity()));
+        settingsBundle.putString("movieUrl", BaseConfig.getMovieListUrl(getActivity()).toString());
+
+        //ContentResolver.requestSync(MovieListActivity.mAccount, MovieContract.CONTENT_AUTHORITY, settingsBundle);
+        MovieSyncAdapter.syncImmediately(getActivity(), settingsBundle);
+    }
+
+    public void onSortTypeChanged(){
+        mPosition = 0;
+        SharedPreferences sp = getActivity().getSharedPreferences(IS_FIRST_SWICH, Context.MODE_PRIVATE);
+        boolean isFirstSwitch = sp.getBoolean(IS_FIRST_SWICH, true);
+        if (isFirstSwitch) {
+            sp.edit().putBoolean(IS_FIRST_SWICH, false).apply();
+            getMoviesList();
+        } else {
+            getMovieListInLocal();
+        }
+    }
+
+    /**
+     * Loader
+     */
+    private MsgReceiver msgReceiver;
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
+
+        msgReceiver = new MsgReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.arno.myapplication.LOAD_FINISHED");
+        getActivity().registerReceiver(msgReceiver, intentFilter);
+
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        if (isFavoriteList) {
+            Uri uri = Uri.parse(MovieContract.CONTENT_FAVORITE_BASE_URI);
+            CursorLoader loader = new CursorLoader(getActivity(), uri, MOVIE_COLUMNS, null, null, null);
+            return loader;
+        } else {
+            Uri uri = Uri.parse(MovieContract.CONTENT_BASE_URI_STRING);
+            if (movieType != null) {
+                CursorLoader loader = new CursorLoader(getActivity(), uri, MOVIE_COLUMNS,
+                        MovieContract.MovieEntry.COLUMN_GET_TYPE + "=?", new String[]{movieType}, null);
+                return loader;
             }
         }
-
+        return null;
     }
 
-    //  自定义解析电影所需信息方法
-    public static List<MovieBean.ResultsBean> getMovieDetail(String movieJsonstr) {
-//      海报路径
-        String poster_path;
-//       剧情简介
-        String overview;
-//      上映日期
-        String release_date;
-//      标题
-        String title;
-//      评分
-        double vote_average;
-//      将Json字符串存到实体Bean中
-        MovieBean movieBean = getObject(movieJsonstr, MovieBean.class);
-//      获得到结果Result的List集合
-        List<MovieBean.ResultsBean> resultBean = movieBean.getResults();
-//       返回结果Bean的List集合
-        return resultBean;
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mMovieListAdapter.swapCursor(data);
+        if (mPosition != GridView.INVALID_POSITION) {
+            gridView.smoothScrollToPosition(mPosition);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mMovieListAdapter.swapCursor(null);
     }
 
 
+    /**
+     * Receiver
+     */
+    public class MsgReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean loadFinishedFlag = intent.getBooleanExtra(MovieSyncAdapter.LOAD_FINISHED_FLAG, false);
+            movieType = intent.getStringExtra(MovieSyncAdapter.MOVIE_TYPE_FLAG);
+            Log.d("MovieListFragment", "receive broadcast! loadFinished: " + loadFinishedFlag + " - movieType: " + movieType);
+            if (loadFinishedFlag) {
+                getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, MainActivityFragment.this);
+            }
+        }
+    }
+
+
+    /**
+     * Menu
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_popularmoviesfragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            /*
+            case R.id.menu_refresh:
+                getMoviesList();
+                break;
+                */
+            case R.id.menu_setting:
+                Intent intent = new Intent(getActivity(), SettingActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.menu_collect:
+                onlyFavorite();
+                break;
+            case R.id.menu_all:
+                notOnlyFavorite();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+    /**
+     * 收藏功能
+     */
+
+    private void onlyFavorite() {
+        isFavoriteList = true;
+        getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+    }
+    private void notOnlyFavorite() {
+        isFavoriteList = false;
+        getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
+    }
+
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mPosition != GridView.INVALID_POSITION) {
+            outState.putInt(SELECTED_KEY, mPosition);
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onDestroy() {
+        getActivity().unregisterReceiver(msgReceiver);
+        super.onDestroy();
+    }
 }

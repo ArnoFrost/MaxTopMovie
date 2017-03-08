@@ -10,13 +10,5 @@
         <item>@string/pref_type_top_rated</item>
     </string-array>
 
-    <string-array name="pref_language_options">
-        <item>@string/pref_language_label_en</item>
-        <item>@string/pref_language_label_zh</item>
-    </string-array>
 
-    <string-array name="pref_language_values">
-        <item>@string/pref_language_en</item>
-        <item>@string/pref_language_zh</item>
-    </string-array>
 </resources>

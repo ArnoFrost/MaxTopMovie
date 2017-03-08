@@ -1,31 +1,37 @@
 package com.arno.myapplication;
 
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
+import android.annotation.TargetApi;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AlertDialog;
+import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
-import android.widget.Toast;
+
+
+/**
+ * Created by dh on 16-12-6.
+ */
 
 public class SettingActivity extends AppCompatActivity {
-    private AlertDialog alertDialog;
-    private String TYPE = "popular";
-    static final String STORE_NAME = "type";
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getFragmentManager().beginTransaction().add(android.R.id.content, new SettingFragment()).commit();
 
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public Intent getParentActivityIntent() {
+        return super.getParentActivityIntent().addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    }
 
+    public static class SettingFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_generalnew);
+        }
+
+    }
 }

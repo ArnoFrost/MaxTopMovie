@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/touch_selector">
+
+    <LinearLayout
+        android:id="@+id/movie_details_ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/details_title_textsize"
+            android:padding="@dimen/details_title_padding_port"
+            android:background="@color/movie_dark_blue"
+            android:textColor="@color/movie_details_text"
+            android:text="@string/tips_detail_tv"
+            android:id="@+id/tips_detail_tv"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/movie_title_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/movie_dark_blue"
+            android:padding="@dimen/details_title_padding_port"
+            android:textColor="@color/movie_details_text"
+            android:textSize="@dimen/details_title_textsize"
+            tools:text="Title"
+            android:visibility="invisible"/>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/movie_image_iv"
+                tools:text="movie_image"
+                android:layout_width="@dimen/movie_details_image_width"
+                android:layout_height="@dimen/movie_details_image_height"
+                android:layout_margin="@dimen/details_image_margin"
+                android:scaleType="fitXY"
+                android:contentDescription="@string/movie_image_description"
+                />
+
+            <RatingBar
+                android:id="@+id/movie_score_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/movie_image_iv"
+                android:layout_marginTop="20dp"
+                android:numStars="5"
+                android:visibility="invisible"
+                style="@style/Base.Widget.AppCompat.RatingBar.Small"/>
+            <TextView
+                android:id="@+id/movie_score_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/movie_score_rb"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="5dp"
+                tools:text="5.7"
+                android:textColor="@color/movie_runtime_red"
+                android:textSize="@dimen/movie_runtime_text_size"/>
+
+            <TextView
+                android:id="@+id/movie_date_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/details_date_margin_top"
+                android:layout_toRightOf="@id/movie_image_iv"
+                android:layout_below="@id/movie_score_rb"
+                android:textSize="@dimen/details_date_textsize"
+                tools:text="2008.03.09"/>
+
+            <TextView
+                android:id="@+id/movie_runtime_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/details_date_margin_top"
+                android:layout_toRightOf="@id/movie_image_iv"
+                android:layout_below="@id/movie_date_tv"
+                android:textSize="@dimen/details_date_textsize"
+                tools:text="173分钟"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_toRightOf="@id/movie_image_iv"
+                android:layout_alignParentBottom="true"
+                android:id="@+id/movie_collect_btn"
+                android:background="@drawable/bg_collect_btn"
+                tools:text="Cancel Collect"
+                android:visibility="invisible"
+                />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/movie_content_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/details_content_margin"
+            android:textSize="@dimen/details_content_textsize"
+            tools:text="overview"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/details_content_margin"
+            android:layout_marginLeft="@dimen/details_content_margin"
+            android:layout_marginRight="@dimen/details_content_margin"
+            android:textSize="20sp"
+            android:text="Videos:"
+            android:visibility="invisible"
+            android:id="@+id/videos_des_tv"
+            />
+        <com.artyhacker.popularmovies.ui.UnScrollListView
+            android:id="@+id/movie_trailers_lv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/details_content_margin"
+            ></com.artyhacker.popularmovies.ui.UnScrollListView>
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/details_content_margin"
+            android:layout_marginLeft="@dimen/details_content_margin"
+            android:layout_marginRight="@dimen/details_content_margin"
+            android:textSize="20sp"
+            android:text="Reviews:"
+            android:visibility="invisible"
+            android:id="@+id/reviews_des_tv"
+            />
+
+        <com.arno.myapplication.UnScrollListView
+            android:id="@+id/movie_reviews_lv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/details_content_margin"
+            />
+    </LinearLayout>
+
+</ScrollView>
