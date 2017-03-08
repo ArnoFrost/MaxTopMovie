@@ -63,8 +63,8 @@ public class MovieListAdapter extends CursorAdapter {
         String imageUrl = BaseConfig.IMAGE_BASE_URL + urlStr;
         Picasso.with(context)
                 .load(imageUrl)
-                .placeholder(R.drawable.bg_loading)
-                .error(R.drawable.bg_error)
+                .placeholder(R.mipmap.bg_loading)
+                .error(R.mipmap.bg_error)
                 .into(holder.imageView);
     }
 

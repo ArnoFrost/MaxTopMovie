@@ -139,7 +139,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         MovieSyncAdapter.syncImmediately(getActivity(), settingsBundle);
     }
 
-    public void onSortTypeChanged(){
+    public void onSortTypeChanged() {
         mPosition = 0;
         SharedPreferences sp = getActivity().getSharedPreferences(IS_FIRST_SWICH, Context.MODE_PRIVATE);
         boolean isFirstSwitch = sp.getBoolean(IS_FIRST_SWICH, true);
@@ -155,6 +155,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
      * Loader
      */
     private MsgReceiver msgReceiver;
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         getLoaderManager().initLoader(MOVIE_LOADER_ID, null, this);
@@ -175,7 +176,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             CursorLoader loader = new CursorLoader(getActivity(), uri, MOVIE_COLUMNS, null, null, null);
             return loader;
         } else {
-            Uri uri = Uri.parse(MovieContract.CONTENT_BASE_URI_STRING);
+            Uri uri = Uri.parse(MovieContract.CONTENT_BASE_URI);
             if (movieType != null) {
                 CursorLoader loader = new CursorLoader(getActivity(), uri, MOVIE_COLUMNS,
                         MovieContract.MovieEntry.COLUMN_GET_TYPE + "=?", new String[]{movieType}, null);
@@ -246,7 +247,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     }
 
 
-
     /**
      * 收藏功能
      */
@@ -255,11 +255,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         isFavoriteList = true;
         getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
     }
+
     private void notOnlyFavorite() {
         isFavoriteList = false;
         getLoaderManager().restartLoader(MOVIE_LOADER_ID, null, this);
     }
-
 
 
     @Override

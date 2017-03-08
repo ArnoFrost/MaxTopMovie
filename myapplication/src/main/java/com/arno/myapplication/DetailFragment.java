@@ -236,8 +236,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         movieOverview.setText(overviewString);
         Picasso.with(getActivity())
                 .load(BaseConfig.IMAGE_BASE_URL + imageString)
-                .placeholder(R.drawable.bg_loading)
-                .error(R.drawable.bg_error)
+                .placeholder(R.mipmap.bg_loading)
+                .error(R.mipmap.bg_error)
                 .into(movieImage);
 
         if (btnFavorite.getVisibility() == View.INVISIBLE) {

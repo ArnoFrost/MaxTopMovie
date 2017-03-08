@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
-
 public class MovieProvider extends ContentProvider {
 
     public static final int MOVIE_DIR = 0;
@@ -29,11 +28,12 @@ public class MovieProvider extends ContentProvider {
     }
 
 
+
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         int deletedRows = 0;
-        if (null == selection) selection = "1";
+        if(null == selection) selection = "1";
         switch (uriMatcher.match(uri)) {
             case MOVIE_DIR:
                 deletedRows = db.delete(MovieContract.MovieEntry.TABLE_NAME, selection, selectionArgs);
@@ -43,11 +43,11 @@ public class MovieProvider extends ContentProvider {
                 deletedRows = db.delete(MovieContract.MovieEntry.TABLE_NAME, "_id=?", new String[]{movieId});
                 break;
             case FAVORITE_DIR:
-                deletedRows = db.delete(MovieContract.FavorEntry.TABLE_NAME, selection, selectionArgs);
+                deletedRows = db.delete(MovieContract.MovieEntry.TABLE_NAME_FAVORITE, selection, selectionArgs);
                 break;
             case FAVORITE_ITEM:
                 String movieId1 = uri.getPathSegments().get(1);
-                deletedRows = db.delete(MovieContract.FavorEntry.TABLE_NAME, "_id=?", new String[]{movieId1});
+                deletedRows = db.delete(MovieContract.MovieEntry.TABLE_NAME_FAVORITE, "_id=?", new String[]{movieId1});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
@@ -60,18 +60,15 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public String getType(Uri uri) {
-
-        final int match = uriMatcher.match(uri);
-
-        switch (match) {
+        switch (uriMatcher.match(uri)) {
             case MOVIE_DIR:
-                return MovieContract.MovieEntry.CONTENT_TYPE;
+                return "vnd.android.cursor.dir/vnd.com.arno.myapplication.movie";
             case MOVIE_ITEM:
-                return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
+                return "vnd.android.cursor.item/vnd.com.arno.myapplication.movie";
             case FAVORITE_DIR:
-                return MovieContract.FavorEntry.CONTENT_TYPE;
+                return "vnd.android.cursor.dir/vnd.com.arno.myapplication.favorite";
             case FAVORITE_ITEM:
-                return MovieContract.FavorEntry.CONTENT_ITEM_TYPE;
+                return "vnd.android.cursor.item/vnd.com.arno.myapplication.favorite";
         }
         return null;
     }
@@ -88,7 +85,7 @@ public class MovieProvider extends ContentProvider {
                 break;
             case FAVORITE_DIR:
             case FAVORITE_ITEM:
-                long newMovieId1 = db.insert(MovieContract.FavorEntry.TABLE_NAME, null, values);
+                long newMovieId1 = db.insert(MovieContract.MovieEntry.TABLE_NAME_FAVORITE, null, values);
                 uriReturn = Uri.parse(MovieContract.CONTENT_FAVORITE_BASE_URI + "/" + newMovieId1);
                 break;
             default:
@@ -107,18 +104,18 @@ public class MovieProvider extends ContentProvider {
             case MOVIE_DIR:
                 db.beginTransaction();
                 int resultCount = 0;
-                try {
+                try{
                     for (ContentValues value : values) {
                         long _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, value);
                         if (_id != -1) {
-                            resultCount++;
+                            resultCount ++;
                         }
                     }
                     db.setTransactionSuccessful();
                 } finally {
                     db.endTransaction();
                 }
-                getContext().getContentResolver().notifyChange(uri, null);
+                getContext().getContentResolver().notifyChange(uri,null);
                 return resultCount;
             default:
                 return super.bulkInsert(uri, values);
@@ -146,11 +143,11 @@ public class MovieProvider extends ContentProvider {
                         null, null, sortOrder);
                 break;
             case FAVORITE_DIR:
-                cursor = db.query(MovieContract.FavorEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                cursor = db.query(MovieContract.MovieEntry.TABLE_NAME_FAVORITE, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
             case FAVORITE_ITEM:
                 String movieId1 = uri.getPathSegments().get(1);
-                cursor = db.query(MovieContract.FavorEntry.TABLE_NAME, projection, "_id=?", new String[]{movieId1},
+                cursor = db.query(MovieContract.MovieEntry.TABLE_NAME_FAVORITE, projection, "_id=?", new String[]{movieId1},
                         null, null, sortOrder);
                 break;
             default:
@@ -173,11 +170,11 @@ public class MovieProvider extends ContentProvider {
                 updateRows = db.update(MovieContract.MovieEntry.TABLE_NAME, values, "_id=?", new String[]{movieId});
                 break;
             case FAVORITE_DIR:
-                updateRows = db.update(MovieContract.FavorEntry.TABLE_NAME, values, selection, selectionArgs);
+                updateRows = db.update(MovieContract.MovieEntry.TABLE_NAME_FAVORITE, values, selection, selectionArgs);
                 break;
             case FAVORITE_ITEM:
                 String movieId1 = uri.getPathSegments().get(1);
-                updateRows = db.update(MovieContract.FavorEntry.TABLE_NAME, values, "_id=?", new String[]{movieId1});
+                updateRows = db.update(MovieContract.MovieEntry.TABLE_NAME_FAVORITE, values, "_id=?", new String[]{movieId1});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);

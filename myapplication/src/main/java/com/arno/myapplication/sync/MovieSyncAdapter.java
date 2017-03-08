@@ -218,7 +218,7 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
             if (cVVector.size() > 0) {
                 ContentValues[] cvArray = new ContentValues[cVVector.size()];
                 cVVector.toArray(cvArray);
-                Uri uri = Uri.parse(MovieContract.CONTENT_BASE_URI_STRING);
+                Uri uri = Uri.parse(MovieContract.CONTENT_BASE_URI);
 
                 int deleteRows = 0;
                 if (MovieContract.MovieEntry.GET_TYPE_VALUE_POP.equals(movieType)) {
@@ -247,7 +247,7 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
      */
     private void getMoviesDetails() {
 
-        Cursor cursor = resolver.query(Uri.parse(MovieContract.CONTENT_BASE_URI_STRING), new String[]{"_id"},
+        Cursor cursor = resolver.query(Uri.parse(MovieContract.CONTENT_BASE_URI), new String[]{"_id"},
                 null, null, null);
 
         if (cursor != null) {
@@ -342,7 +342,7 @@ public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void checkPopFirstChanged(Context context) {
 
-        Cursor cursor = resolver.query(Uri.parse(MovieContract.CONTENT_BASE_URI_STRING), null, "getType=?",
+        Cursor cursor = resolver.query(Uri.parse(MovieContract.CONTENT_BASE_URI), null, "getType=?",
                 new String[]{MovieContract.MovieEntry.GET_TYPE_VALUE_POP}, null);
         if (cursor.moveToFirst()) {
             String newId = cursor.getString(cursor.getColumnIndex("_id"));
