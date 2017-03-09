@@ -11,9 +11,11 @@ import com.arno.myapplication.R;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * Created by david on 17-03-08.
- */
+/*
+*   BaseConfig
+*   @author arno
+*   create at 2017/3/9 0009 10:52
+*/
 
 public class BaseConfig {
     public static final String API_KEY = BuildConfig.MyApiKey;

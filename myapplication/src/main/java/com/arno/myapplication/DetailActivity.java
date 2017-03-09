@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-/**
- * Created by dh on 16-12-5.
- */
-public class  DetailActivity extends AppCompatActivity {
+/*
+*   DetailActivity
+*   @author arno
+*   create at 2017/3/9 0009 10:36
+*/
+public class DetailActivity extends AppCompatActivity {
     public static boolean DETAIL_ACITIVTY_IS_STOP;
 
     @Override

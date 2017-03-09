@@ -7,6 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
+/*
+*   MovieProvider
+*   @author arno
+*   create at 2017/3/9 0009 10:52
+*/
+
 public class MovieProvider extends ContentProvider {
 
     public static final int MOVIE_DIR = 0;

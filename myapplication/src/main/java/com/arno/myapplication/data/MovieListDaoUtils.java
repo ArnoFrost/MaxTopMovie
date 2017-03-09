@@ -10,9 +10,11 @@ import com.arno.myapplication.bean.MovieBean;
 
 import java.util.ArrayList;
 
-/**
- * Created by dh on 16-12-7.
- */
+/*
+*   MovieListDaoUtils
+*   @author arno
+*   create at 2017/3/9 0009 10:52
+*/
 
 public class MovieListDaoUtils {
     private MovieListDatabaseOpenHelper helper;

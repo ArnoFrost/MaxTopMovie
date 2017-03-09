@@ -13,9 +13,14 @@ import com.arno.myapplication.bean.MovieTrailer;
 
 import java.util.ArrayList;
 
-/**
- * Created by dh on 16-12-14.
- */
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/*
+*   MovieTrailerAdapter
+*   @author arno
+*   create at 2017/3/9 0009 10:35
+*/
 
 public class MovieTrailerAdapter extends BaseAdapter {
     private Context context;
@@ -41,10 +46,20 @@ public class MovieTrailerAdapter extends BaseAdapter {
         return position;
     }
 
-    private class ViewHolder{
-        TextView tvType;
+    static class ViewHolder {
+        //        TextView tvType;
+//        TextView tvName;
+//        TextView tvSize;
+        @BindView(R.id.trailer_name_tv)
         TextView tvName;
+        @BindView(R.id.trailer_type_tv)
+        TextView tvType;
+        @BindView(R.id.trailer_size_tv)
         TextView tvSize;
+
+        public ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 
     @Override
@@ -52,10 +67,7 @@ public class MovieTrailerAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.list_item_trailer, parent, false);
-            holder = new ViewHolder();
-            holder.tvName = (TextView) convertView.findViewById(R.id.trailer_name_tv);
-            holder.tvSize = (TextView) convertView.findViewById(R.id.trailer_size_tv);
-            holder.tvType = (TextView) convertView.findViewById(R.id.trailer_type_tv);
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();

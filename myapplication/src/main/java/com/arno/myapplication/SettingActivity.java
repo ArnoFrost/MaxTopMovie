@@ -8,9 +8,11 @@ import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 
 
-/**
- * Created by dh on 16-12-6.
- */
+/*
+*   SettingActivity
+*   @author arno
+*   create at 2017/3/9 0009 10:50
+*/
 
 public class SettingActivity extends AppCompatActivity {
     @Override

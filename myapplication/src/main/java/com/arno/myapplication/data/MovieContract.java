@@ -2,9 +2,11 @@ package com.arno.myapplication.data;
 
 import android.provider.BaseColumns;
 
-/**
- * Created by dh on 16-12-8.
- */
+/*
+*   MovieContract
+*   @author arno
+*   create at 2017/3/9 0009 10:52
+*/
 
 public class MovieContract implements BaseColumns {
 
@@ -12,7 +14,7 @@ public class MovieContract implements BaseColumns {
     public static final String CONTENT_BASE_URI = "content://com.arno.myapplication/movie";
     public static final String CONTENT_FAVORITE_BASE_URI = "content://com.arno.myapplication/favorite";
 
-    public static final class MovieEntry implements BaseColumns{
+    public static final class MovieEntry implements BaseColumns {
 
         public static final String DATABASE_NAME = "movie.db";
         public static final String TABLE_NAME = "movieList";

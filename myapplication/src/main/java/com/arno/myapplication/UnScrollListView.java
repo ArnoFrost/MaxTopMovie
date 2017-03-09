@@ -4,9 +4,11 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ListView;
 
-/**
- * Created by dh on 16-12-14.
- */
+/*
+*   UnScrollListView
+*   @author arno
+*   create at 2017/3/9 0009 10:51
+*/
 
 public class UnScrollListView extends ListView {
     public UnScrollListView(Context context) {

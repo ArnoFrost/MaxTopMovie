@@ -1,8 +1,10 @@
 package com.arno.myapplication.bean;
 
-/**
- * Created by dh on 16-12-14.
- */
+/*
+*   MovieTrailer
+*   @author arno
+*   create at 2017/3/9 0009 10:53
+*/
 
 public class MovieTrailer {
     public String name;

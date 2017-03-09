@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-/**
- * Created by dh on 16-12-24.
- */
+/*
+*   MovieAuthenticatorService
+*   @author arno
+*   create at 2017/3/9 0009 10:51
+*/
 
 public class MovieAuthenticatorService extends Service {
 

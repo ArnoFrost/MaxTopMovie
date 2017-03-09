@@ -47,9 +47,11 @@ import okhttp3.Response;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
-/**
- * Created by dh on 16-12-24.
- */
+/*
+*   MovieSyncAdapter
+*   @author arno
+*   create at 2017/3/9 0009 10:52
+*/
 
 public class MovieSyncAdapter extends AbstractThreadedSyncAdapter {
 

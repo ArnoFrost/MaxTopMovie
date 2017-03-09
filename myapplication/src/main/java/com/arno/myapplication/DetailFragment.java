@@ -40,9 +40,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/**
- * Created by dh on 16-12-16.
- */
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+/*
+*   DetailFragment
+*   @author arno
+*   create at 2017/3/9 0009 10:49
+*/
 
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener {
 
@@ -85,24 +90,45 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public static final String DETAIL_URI = "URI";
     private Uri mUri;
     private static final int DETAIL_LOADER = 0;
+
     private static TextView tvRuntime;
     private static UnScrollListView lvTrailers;
     private static UnScrollListView lvReviews;
-    private Button btnFavorite;
-    private TextView tvVideosDes;
-    private TextView tvReviewsDes;
-    private TextView tvMovieTitle;
-    private TextView tvTips;
-    private RatingBar ratingBar;
+//    private Button btnFavorite;
+//    private TextView tvVideosDes;
+//    private TextView tvReviewsDes;
+//    private TextView tvMovieTitle;
+//    private TextView tvTips;
+//    private RatingBar ratingBar;
+
+    //    @BindView(R.id.movie_runtime_tv)
+//    TextView tvRuntime;
+//    @BindView(R.id.movie_trailers_lv)
+//    UnScrollListView lvTrailers;
+//    @BindView(R.id.movie_reviews_lv)
+//    UnScrollListView lvReviews;
+    @BindView(R.id.movie_collect_btn)
+    Button btnFavorite;
+    @BindView(R.id.videos_des_tv)
+    TextView tvVideosDes;
+    @BindView(R.id.reviews_des_tv)
+    TextView tvReviewsDes;
+    @BindView(R.id.movie_score_rb)
+    RatingBar ratingBar;
+    @BindView(R.id.movie_title_tv)
+    TextView tvMovieTitle;
+    @BindView(R.id.tips_detail_tv)
+    TextView tvTips;
+
     private boolean isFavorite;
     private static ContentResolver resolver;
     private static Context mContext;
 
-    private static Handler handler = new Handler(){
+    private static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
 
-            if(!DetailActivity.DETAIL_ACITIVTY_IS_STOP) {
+            if (!DetailActivity.DETAIL_ACITIVTY_IS_STOP) {
                 if (null != movieRuntime) {
                     tvRuntime.setText(mContext.getString(R.string.format_runtime, movieRuntime));
                 }
@@ -114,7 +140,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         }
     };
 
-    public DetailFragment(){
+    public DetailFragment() {
         setHasOptionsMenu(true);
     }
 
@@ -130,15 +156,21 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         movieReviewsList = new ArrayList<>();
 
         View view = inflater.inflate(R.layout.fragment_movie_details, container, false);
+        ButterKnife.bind(this, view);
+//        view.scrollTo(0, 0);
+//        view.setFocusable(true);
+//        view.setFocusableInTouchMode(true);
+//        view.requestFocus();
         tvRuntime = (TextView) view.findViewById(R.id.movie_runtime_tv);
         lvTrailers = (UnScrollListView) view.findViewById(R.id.movie_trailers_lv);
         lvReviews = (UnScrollListView) view.findViewById(R.id.movie_reviews_lv);
-        btnFavorite = (Button) view.findViewById(R.id.movie_collect_btn);
-        tvVideosDes = (TextView) view.findViewById(R.id.videos_des_tv);
-        tvReviewsDes = (TextView) view.findViewById(R.id.reviews_des_tv);
-        ratingBar = (RatingBar) view.findViewById(R.id.movie_score_rb);
-        tvMovieTitle = (TextView) view.findViewById(R.id.movie_title_tv);
-        tvTips = (TextView) view.findViewById(R.id.tips_detail_tv);
+
+//        btnFavorite = (Button) view.findViewById(R.id.movie_collect_btn);
+//        tvVideosDes = (TextView) view.findViewById(R.id.videos_des_tv);
+//        tvReviewsDes = (TextView) view.findViewById(R.id.reviews_des_tv);
+//        ratingBar = (RatingBar) view.findViewById(R.id.movie_score_rb);
+//        tvMovieTitle = (TextView) view.findViewById(R.id.movie_title_tv);
+//        tvTips = (TextView) view.findViewById(R.id.tips_detail_tv);
 
         btnFavorite.setOnClickListener(this);
 
@@ -228,10 +260,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         TextView movieScore = (TextView) getView().findViewById(R.id.movie_score_tv);
         TextView movieOverview = (TextView) getView().findViewById(R.id.movie_content_tv);
         RatingBar movieRatingBar = (RatingBar) getView().findViewById(R.id.movie_score_rb);
-        movieRatingBar.setRating(Float.parseFloat(voteString)/2);
+        movieRatingBar.setRating(Float.parseFloat(voteString) / 2);
 
         movieTitle.setText(titleString);
-        movieDate.setText(dateString);
+        movieDate.setText("上映日期：" + dateString);
         movieScore.setText(voteString);
         movieOverview.setText(overviewString);
         Picasso.with(getActivity())
@@ -253,12 +285,11 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         Log.d("MovieDetails", "id: " + id);
 
     }
+
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
     }
-
-
 
 
     /**
@@ -295,7 +326,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                     String reviewsStr = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_REVIEWS));
                     cursor.close();
                     try {
-                        if(null != videosStr) {
+                        if (null != videosStr) {
                             JSONArray videosJson = new JSONArray(videosStr);
                             for (int i = 0; i < videosJson.length(); i++) {
                                 MovieTrailer trailer = new MovieTrailer();
@@ -308,7 +339,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                             }
                         }
 
-                        if(null != reviewsStr) {
+                        if (null != reviewsStr) {
                             JSONArray reviewsJson = new JSONArray(reviewsStr);
                             for (int j = 0; j < reviewsJson.length(); j++) {
                                 JSONObject reviewJson = reviewsJson.getJSONObject(j);
@@ -362,7 +393,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                     values.put(MOVIE_COLUMNS[7], cursor.getString(COL_MOVIE_GET_TYPE));
                     values.put(MOVIE_COLUMNS[8], cursor.getString(COL_MOVIE_RUNTIME));
                     values.put(MOVIE_COLUMNS[9], cursor.getString(COL_MOVIE_VIDEOS));
-                    values.put(MOVIE_COLUMNS[10],cursor.getString(COL_MOVIE_REVIEWS));
+                    values.put(MOVIE_COLUMNS[10], cursor.getString(COL_MOVIE_REVIEWS));
                     resolver.insert(favoriteUri, values);
                 }
                 cursor.close();

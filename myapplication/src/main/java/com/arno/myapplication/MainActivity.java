@@ -9,7 +9,11 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.arno.myapplication.sync.MovieSyncAdapter;
-
+/*
+*   MainActivity
+*   @author arno
+*   create at 2017/3/9 0009 10:49
+*/
 
 public class MainActivity extends AppCompatActivity implements MainActivityFragment.mCallback {
 

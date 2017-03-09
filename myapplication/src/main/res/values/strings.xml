@@ -82,7 +82,7 @@
     <string name="menu_collect">收藏</string>
     <string name="menu_all">全部</string>
 
-    <string name="format_runtime"><xliff:g id="runtime">%s</xliff:g>分钟</string>
+    <string name="format_runtime">电影时长：<xliff:g id="runtime">%s</xliff:g>分钟</string>
     <string name="btn_text_favorite">收藏</string>
     <string name="btn_text_unfavorite">取消收藏</string>
 

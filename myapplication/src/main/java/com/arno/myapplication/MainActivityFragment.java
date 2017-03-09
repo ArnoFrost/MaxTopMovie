@@ -32,7 +32,11 @@ import com.arno.myapplication.sync.MovieSyncAdapter;
 
 import java.util.ArrayList;
 
-
+/*
+*   MainActivityFragment
+*   @author arno
+*   create at 2017/3/9 0009 10:50
+*/
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
     private int mPosition = GridView.INVALID_POSITION;
