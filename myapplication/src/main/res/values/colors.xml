@@ -5,7 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="titleBackground">#07a69c</color>
 
-、
+    、
     <color name="movie_details_title">#339966</color>
     <color name="movie_details_text">#ffffff</color>
     <color name="blackBackground">#000000</color>
@@ -15,4 +15,10 @@
     <color name="movie_blue">#ff1ca8f4</color>
     <color name="movie_dark_blue">#0288d1</color>
     <color name="movie_runtime_red">#ff0000</color>
+
+    <color name="ratingbar_low">#795548</color>
+    <color name="ratingbar_mid">#009688</color>
+    <color name="ratingbar_high">#ff6e40</color>
+
+
 </resources>

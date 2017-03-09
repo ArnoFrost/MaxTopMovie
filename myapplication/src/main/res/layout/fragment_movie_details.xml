@@ -49,36 +49,59 @@
                 android:contentDescription="@string/movie_image_description"
                 android:scaleType="fitXY"
                 tools:text="movie_image" />
-
+            <!--样式控制-->
             <RatingBar
-                android:id="@+id/movie_score_rb"
-                style="@style/Base.Widget.AppCompat.RatingBar.Small"
+                android:id="@+id/movie_score_rb_low"
+                style="@style/Base.Widget.AppCompat.RatingBar.Indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_toRightOf="@id/movie_image_iv"
                 android:numStars="5"
-                android:progressTint="@color/colorPrimaryDark"
+                android:progressTint="@color/ratingbar_low"
                 android:visibility="invisible" />
+
+            <RatingBar
+                android:id="@+id/movie_score_rb_mid"
+                style="@style/Base.Widget.AppCompat.RatingBar.Indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@id/movie_image_iv"
+                android:numStars="5"
+                android:progressTint="@color/ratingbar_mid"
+                android:visibility="gone" />
+
+            <RatingBar
+                android:id="@+id/movie_score_rb_high"
+                style="@style/Base.Widget.AppCompat.RatingBar.Indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@id/movie_image_iv"
+                android:numStars="5"
+                android:progressTint="@color/ratingbar_high"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/movie_score_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:layout_marginTop="20dp"
-                android:layout_toRightOf="@id/movie_score_rb"
                 android:textColor="@color/movie_runtime_red"
-                android:textSize="@dimen/movie_runtime_text_size"
-                tools:text="5.7" />
+                android:textSize="24sp"
+                tools:text="5.7"
+                android:layout_above="@+id/movie_date_tv"
+                android:layout_alignEnd="@+id/movie_runtime_tv"
+                android:layout_marginBottom="18dp" />
 
             <TextView
                 android:id="@+id/movie_date_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/movie_score_rb"
-                android:layout_marginTop="@dimen/details_date_margin_top"
-                android:layout_toRightOf="@id/movie_image_iv"
+                android:layout_above="@+id/movie_runtime_tv"
+                android:layout_marginBottom="17dp"
+                android:layout_toEndOf="@+id/movie_image_iv"
                 android:textSize="@dimen/details_date_textsize"
                 tools:text="2008.03.09" />
 
@@ -86,9 +109,9 @@
                 android:id="@+id/movie_runtime_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/movie_date_tv"
-                android:layout_marginTop="@dimen/details_date_margin_top"
-                android:layout_toRightOf="@id/movie_image_iv"
+                android:layout_above="@+id/movie_collect_btn"
+                android:layout_marginBottom="24dp"
+                android:layout_toEndOf="@+id/movie_image_iv"
                 android:textSize="@dimen/details_date_textsize"
                 tools:text="173分钟" />
 
@@ -121,7 +144,7 @@
             android:layout_marginLeft="@dimen/details_content_margin"
             android:layout_marginRight="@dimen/details_content_margin"
             android:layout_marginTop="@dimen/details_content_margin"
-            android:text="Videos:"
+            android:text="预告片："
             android:textSize="20sp"
             android:visibility="invisible" />
 
@@ -139,7 +162,7 @@
             android:layout_marginLeft="@dimen/details_content_margin"
             android:layout_marginRight="@dimen/details_content_margin"
             android:layout_marginTop="@dimen/details_content_margin"
-            android:text="Reviews:"
+            android:text="影片评论："
             android:textSize="20sp"
             android:visibility="invisible" />
 

@@ -23,7 +23,7 @@
 
     <style name="ActionBar.Solid.Movie.Notitle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="displayOptions">useLogo|showHome</item>
-        <item name="logo">@mipmap/ic_logo</item>
+        <item name="logo">@mipmap/ic_movie</item>
     </style>
 
     <style name="MovieListStyle">

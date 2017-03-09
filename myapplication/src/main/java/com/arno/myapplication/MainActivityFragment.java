@@ -240,6 +240,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             case R.id.menu_setting:
                 Intent intent = new Intent(getActivity(), SettingActivity.class);
                 startActivity(intent);
+                getActivity().overridePendingTransition(R.anim.zoomin, R.anim.zoomout);
                 break;
             case R.id.menu_collect:
                 onlyFavorite();

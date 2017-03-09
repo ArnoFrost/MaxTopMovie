@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -94,27 +95,13 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static TextView tvRuntime;
     private static UnScrollListView lvTrailers;
     private static UnScrollListView lvReviews;
-//    private Button btnFavorite;
-//    private TextView tvVideosDes;
-//    private TextView tvReviewsDes;
-//    private TextView tvMovieTitle;
-//    private TextView tvTips;
-//    private RatingBar ratingBar;
 
-    //    @BindView(R.id.movie_runtime_tv)
-//    TextView tvRuntime;
-//    @BindView(R.id.movie_trailers_lv)
-//    UnScrollListView lvTrailers;
-//    @BindView(R.id.movie_reviews_lv)
-//    UnScrollListView lvReviews;
     @BindView(R.id.movie_collect_btn)
     Button btnFavorite;
     @BindView(R.id.videos_des_tv)
     TextView tvVideosDes;
     @BindView(R.id.reviews_des_tv)
     TextView tvReviewsDes;
-    @BindView(R.id.movie_score_rb)
-    RatingBar ratingBar;
     @BindView(R.id.movie_title_tv)
     TextView tvMovieTitle;
     @BindView(R.id.tips_detail_tv)
@@ -157,20 +144,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
         View view = inflater.inflate(R.layout.fragment_movie_details, container, false);
         ButterKnife.bind(this, view);
-//        view.scrollTo(0, 0);
-//        view.setFocusable(true);
-//        view.setFocusableInTouchMode(true);
-//        view.requestFocus();
         tvRuntime = (TextView) view.findViewById(R.id.movie_runtime_tv);
         lvTrailers = (UnScrollListView) view.findViewById(R.id.movie_trailers_lv);
         lvReviews = (UnScrollListView) view.findViewById(R.id.movie_reviews_lv);
 
-//        btnFavorite = (Button) view.findViewById(R.id.movie_collect_btn);
-//        tvVideosDes = (TextView) view.findViewById(R.id.videos_des_tv);
-//        tvReviewsDes = (TextView) view.findViewById(R.id.reviews_des_tv);
-//        ratingBar = (RatingBar) view.findViewById(R.id.movie_score_rb);
-//        tvMovieTitle = (TextView) view.findViewById(R.id.movie_title_tv);
-//        tvTips = (TextView) view.findViewById(R.id.tips_detail_tv);
 
         btnFavorite.setOnClickListener(this);
 
@@ -190,7 +167,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 TextView tvDialogContent = (TextView) dialogView.findViewById(R.id.dialog_content_tv);
                 tvDialogContent.setText(movieReviewsList.get(position).content);
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                        .setTitle("Review Details")
+                        .setTitle("评论详情")
                         .setCancelable(true)
                         .setView(dialogView)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -202,6 +179,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
                 builder.show();
             }
         });
+//修复进入详情页面发生内容没有置顶
+        lvTrailers.setFocusable(false);
+        lvReviews.setFocusable(false);
 
         return view;
     }
@@ -252,38 +232,65 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         String overviewString = data.getString(COL_MOVIE_OVERVIEW);
         String voteString = data.getString(COL_MOVIE_VOTE_AVERAGE);
         String dateString = data.getString(COL_MOVIE_RELEASE_DATE);
-        String popularString = data.getString(COL_MOVIE_POPULARITY);
+//        String popularString = data.getString(COL_MOVIE_POPULARITY);
 
         ImageView movieImage = (ImageView) getView().findViewById(R.id.movie_image_iv);
         TextView movieTitle = (TextView) getView().findViewById(R.id.movie_title_tv);
         TextView movieDate = (TextView) getView().findViewById(R.id.movie_date_tv);
         TextView movieScore = (TextView) getView().findViewById(R.id.movie_score_tv);
         TextView movieOverview = (TextView) getView().findViewById(R.id.movie_content_tv);
-        RatingBar movieRatingBar = (RatingBar) getView().findViewById(R.id.movie_score_rb);
-        movieRatingBar.setRating(Float.parseFloat(voteString) / 2);
+
+        RatingBar movieRatingBarlow = (RatingBar) getView().findViewById(R.id.movie_score_rb_low);
+        RatingBar movieRatingBarmid = (RatingBar) getView().findViewById(R.id.movie_score_rb_mid);
+        RatingBar movieRatingBarhigh = (RatingBar) getView().findViewById(R.id.movie_score_rb_high);
 
         movieTitle.setText(titleString);
         movieDate.setText("上映日期：" + dateString);
-        movieScore.setText(voteString);
         movieOverview.setText(overviewString);
         Picasso.with(getActivity())
                 .load(BaseConfig.IMAGE_BASE_URL + imageString)
                 .placeholder(R.mipmap.bg_loading)
                 .error(R.mipmap.bg_error)
                 .into(movieImage);
+//      样式控制
+//      解决整数后小数点不显示
+        Float vote = Float.parseFloat(voteString);
+        movieScore.setText(vote.toString() + " 分");
 
-        if (btnFavorite.getVisibility() == View.INVISIBLE) {
-            btnFavorite.setVisibility(View.VISIBLE);
-            tvVideosDes.setVisibility(View.VISIBLE);
-            tvReviewsDes.setVisibility(View.VISIBLE);
-            ratingBar.setVisibility(View.VISIBLE);
-            tvMovieTitle.setVisibility(View.VISIBLE);
-            tvTips.setVisibility(View.GONE);
+        if (vote < 5.0) {
+            //@color/ratingbar_low
+            movieScore.setTextColor(Color.argb(255, 121, 85, 72));
+            movieRatingBarlow.setRating(vote / 2.0f);
+            setView(movieRatingBarlow, movieRatingBarmid, movieRatingBarhigh);
+        } else if ((vote >= 5.0) && (vote < 8.0)) {
+            //@color/ratingbar_mid
+            movieScore.setTextColor(Color.argb(255, 0, 150, 136));
+            movieRatingBarmid.setRating(vote / 2.0f);
+            setView(movieRatingBarmid, movieRatingBarlow, movieRatingBarhigh);
+        } else {
+            //@color/ratingbar_high
+            movieScore.setTextColor(Color.argb(255, 255, 110, 64));
+            movieRatingBarhigh.setRating(vote / 2.0f);
+            setView(movieRatingBarhigh, movieRatingBarlow, movieRatingBarmid);
         }
 
 
         Log.d("MovieDetails", "id: " + id);
 
+    }
+
+    //自定义重用方法
+    public void setView(RatingBar show, RatingBar hide1, RatingBar hide2) {
+        if (btnFavorite.getVisibility() == View.INVISIBLE) {
+            btnFavorite.setVisibility(View.VISIBLE);
+            tvVideosDes.setVisibility(View.VISIBLE);
+            tvReviewsDes.setVisibility(View.VISIBLE);
+            show.setVisibility(View.VISIBLE);
+            hide1.setVisibility(View.GONE);
+            hide2.setVisibility(View.GONE);
+            tvMovieTitle.setVisibility(View.VISIBLE);
+            tvTips.setVisibility(View.GONE);
+        }
     }
 
     @Override

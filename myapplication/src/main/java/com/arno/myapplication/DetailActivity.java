@@ -15,6 +15,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.zoomin, R.anim.zoomout);
         setContentView(R.layout.activity_details_container);
         DETAIL_ACITIVTY_IS_STOP = false;
 
@@ -40,5 +41,11 @@ public class DetailActivity extends AppCompatActivity {
     protected void onStop() {
         DETAIL_ACITIVTY_IS_STOP = true;
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        overridePendingTransition(R.anim.zoomin, R.anim.zoomout);
     }
 }

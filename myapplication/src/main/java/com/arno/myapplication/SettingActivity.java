@@ -18,6 +18,8 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(R.anim.zoomin, R.anim.zoomout);
+
         getFragmentManager().beginTransaction().add(android.R.id.content, new SettingFragment()).commit();
 
     }
