@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -96,8 +95,10 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private static UnScrollListView lvTrailers;
     private static UnScrollListView lvReviews;
 
+    //    @BindView(R.id.movie_collect_btn)
+//    Button btnFavorite;
     @BindView(R.id.movie_collect_btn)
-    Button btnFavorite;
+    net.qiujuer.genius.ui.widget.Button btnFavorite;
     @BindView(R.id.videos_des_tv)
     TextView tvVideosDes;
     @BindView(R.id.reviews_des_tv)

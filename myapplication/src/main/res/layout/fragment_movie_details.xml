@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -36,98 +37,124 @@
             android:visibility="invisible"
             tools:text="Title" />
 
-
-        <RelativeLayout
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardView_detail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="8dp">
 
-            <ImageView
-                android:id="@+id/movie_image_iv"
-                android:layout_width="@dimen/movie_details_image_width"
-                android:layout_height="@dimen/movie_details_image_height"
-                android:layout_margin="@dimen/details_image_margin"
-                android:contentDescription="@string/movie_image_description"
-                android:scaleType="fitXY"
-                tools:text="movie_image" />
-            <!--样式控制-->
-            <RatingBar
-                android:id="@+id/movie_score_rb_low"
-                style="@style/Base.Widget.AppCompat.RatingBar.Indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_toRightOf="@id/movie_image_iv"
-                android:numStars="5"
-                android:progressTint="@color/ratingbar_low"
-                android:visibility="invisible" />
-
-            <RatingBar
-                android:id="@+id/movie_score_rb_mid"
-                style="@style/Base.Widget.AppCompat.RatingBar.Indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_toRightOf="@id/movie_image_iv"
-                android:numStars="5"
-                android:progressTint="@color/ratingbar_mid"
-                android:visibility="gone" />
-
-            <RatingBar
-                android:id="@+id/movie_score_rb_high"
-                style="@style/Base.Widget.AppCompat.RatingBar.Indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_toRightOf="@id/movie_image_iv"
-                android:numStars="5"
-                android:progressTint="@color/ratingbar_high"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/movie_score_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:textColor="@color/movie_runtime_red"
-                android:textSize="24sp"
-                tools:text="5.7"
-                android:layout_above="@+id/movie_date_tv"
-                android:layout_alignEnd="@+id/movie_runtime_tv"
-                android:layout_marginBottom="18dp" />
-
-            <TextView
-                android:id="@+id/movie_date_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/movie_runtime_tv"
-                android:layout_marginBottom="17dp"
-                android:layout_toEndOf="@+id/movie_image_iv"
-                android:textSize="@dimen/details_date_textsize"
-                tools:text="2008.03.09" />
-
-            <TextView
-                android:id="@+id/movie_runtime_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/movie_collect_btn"
-                android:layout_marginBottom="24dp"
-                android:layout_toEndOf="@+id/movie_image_iv"
-                android:textSize="@dimen/details_date_textsize"
-                tools:text="173分钟" />
-
-            <Button
-                android:id="@+id/movie_collect_btn"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/movie_image_iv"
-                android:layout_marginRight="15dp"
-                android:layout_toEndOf="@+id/movie_image_iv"
-                android:background="@drawable/bg_collect_btn"
-                android:textColor="@color/whiteBackground"
-                android:visibility="invisible"
-                tools:text="Cancel Collect" />
+                android:background="@color/grey">
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/movie_image_iv"
+                    android:layout_width="@dimen/movie_details_image_width"
+                    android:layout_height="@dimen/movie_details_image_height"
+                    android:layout_margin="@dimen/details_image_margin"
+                    android:contentDescription="@string/movie_image_description"
+                    android:scaleType="fitXY"
+                    tools:text="movie_image" />
+                <!--样式控制-->
+                <RatingBar
+                    android:id="@+id/movie_score_rb_low"
+                    style="@style/Base.Widget.AppCompat.RatingBar.Indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_toRightOf="@id/movie_image_iv"
+                    android:numStars="5"
+                    android:progressTint="@color/ratingbar_low"
+                    android:visibility="invisible" />
+
+                <RatingBar
+                    android:id="@+id/movie_score_rb_mid"
+                    style="@style/Base.Widget.AppCompat.RatingBar.Indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_toRightOf="@id/movie_image_iv"
+                    android:numStars="5"
+                    android:progressTint="@color/ratingbar_mid"
+                    android:visibility="gone" />
+
+                <RatingBar
+                    android:id="@+id/movie_score_rb_high"
+                    style="@style/Base.Widget.AppCompat.RatingBar.Indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_toRightOf="@id/movie_image_iv"
+                    android:numStars="5"
+                    android:progressTint="@color/ratingbar_high"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/movie_score_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/movie_date_tv"
+                    android:layout_alignEnd="@+id/movie_runtime_tv"
+                    android:layout_marginBottom="18dp"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/movie_runtime_red"
+                    android:textSize="24sp"
+                    tools:text="5.7" />
+
+                <TextView
+                    android:id="@+id/movie_date_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/movie_runtime_tv"
+                    android:layout_marginBottom="17dp"
+                    android:layout_toEndOf="@+id/movie_image_iv"
+                    android:textSize="@dimen/details_date_textsize"
+                    tools:text="2008.03.09" />
+
+                <TextView
+                    android:id="@+id/movie_runtime_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/cardView_detail_btnCard"
+                    android:layout_marginBottom="24dp"
+                    android:layout_toEndOf="@+id/movie_image_iv"
+                    android:textSize="@dimen/details_date_textsize"
+                    tools:text="173分钟" />
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cardView_detail_btnCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@+id/movie_image_iv"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_toEndOf="@+id/movie_image_iv"
+                    app:cardCornerRadius="8dp"
+                    app:cardElevation="8dp">
+
+                    <net.qiujuer.genius.ui.widget.Button
+                        android:id="@+id/movie_collect_btn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/movie_blue"
+                        android:gravity="center"
+                        android:textColor="@color/whiteBackground"
+                        android:textSize="@dimen/details_date_textsize"
+                        android:visibility="invisible"
+                        tools:text="Cancel Collect">
+
+                    </net.qiujuer.genius.ui.widget.Button>
+                </android.support.v7.widget.CardView>
+
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
 
         <TextView
             android:id="@+id/movie_content_tv"
